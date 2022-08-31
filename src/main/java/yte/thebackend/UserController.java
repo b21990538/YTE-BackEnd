@@ -19,6 +19,6 @@ public class UserController {
     @GetMapping("/getuser")
     public User getUser() {
         userRepository.findAll().forEach(System.out::println);
-        return new User(1, "test");
+        return new User("test");
     }
 }

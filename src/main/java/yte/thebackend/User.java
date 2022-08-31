@@ -19,8 +19,7 @@ public class User {
         return name;
     }
 
-    public User(Integer id, String name) {
-        this.id = id;
+    public User(String name) {
         this.name = name;
     }
 
