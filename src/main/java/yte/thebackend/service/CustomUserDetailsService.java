@@ -8,8 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yte.thebackend.entity.AuthUser;
 import yte.thebackend.entity.Authority;
+import yte.thebackend.entity.User;
 import yte.thebackend.repository.AuthUserRepository;
 import yte.thebackend.repository.AuthorityRepository;
+import yte.thebackend.repository.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -19,21 +21,29 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final AuthUserRepository authUserRepository;
+    private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
 
     @PostConstruct  // TODO remove
     public void init() {
-        authorityRepository.save(new Authority("USER"));
+        authorityRepository.save(new Authority("STUDENT"));
         authorityRepository.save(new Authority("ADMIN"));
+        authorityRepository.save(new Authority("ASSISTANT"));
+        authorityRepository.save(new Authority("LECTURER"));
 
-        Authority authorityUSER = authorityRepository.findByAuthority("USER");
+        Authority authoritySTUDENT = authorityRepository.findByAuthority("STUDENT");
         Authority authorityADMIN = authorityRepository.findByAuthority("ADMIN");
 
-        authUserRepository.save(new AuthUser(null, "user", passwordEncoder.encode("user"),
-                true, List.of(authorityUSER)));
-        authUserRepository.save(new AuthUser(null, "admin", passwordEncoder.encode("admin"),
-                true, List.of(authorityUSER, authorityADMIN)));
+        User user1 = new User("User", "Surname", "bla@bla.com",
+                new AuthUser("user", passwordEncoder.encode("user"),
+                        List.of(authoritySTUDENT)));
+        User user2 = new User("Adam", "Driver", "adam@glol.com",
+                new AuthUser("admin", passwordEncoder.encode("admin"),
+                        List.of(authorityADMIN)));
+
+        userRepository.save(user1);
+        userRepository.save(user2);
     }
 
     @Override   // TODO handle exception

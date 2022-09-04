@@ -7,7 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import yte.thebackend.entity.AuthUser;
 import yte.thebackend.pojo.LoginRequest;
+import yte.thebackend.pojo.LoginResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +17,7 @@ public class LoginService {
 
     private final AuthenticationManager authenticationManager;
 
-    public String login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.username(),
                 loginRequest.password());
 
@@ -25,6 +27,9 @@ public class LoginService {
         newContext.setAuthentication(authenticatedAuthentication);
         SecurityContextHolder.setContext(newContext);
 
-        return "Authentication is successful";  // TODO auth success
+        AuthUser authUser = (AuthUser) authenticatedAuthentication.getPrincipal();
+
+        return new LoginResponse(authUser.getId(),
+                authUser.getUsername(), authUser.getStringAuthorities());  // TODO auth success
     }
 }

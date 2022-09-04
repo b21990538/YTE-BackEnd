@@ -20,7 +20,7 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable()
-                .logout().disable()
+                .logout().and()     // TODO logout disabled?
                 .csrf().disable()   // TODO csrf?
                 .build();
     }
