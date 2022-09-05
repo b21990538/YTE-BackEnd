@@ -1,4 +1,4 @@
-package yte.thebackend.entity;
+package yte.thebackend.common.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,18 +10,13 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Authority implements GrantedAuthority {
-
-    @Id
-    @GeneratedValue
-    @Column(nullable = false)
-    private Long id;
+public class Authority extends BaseEntity implements GrantedAuthority {
 
     // TODO database set to update
     private String authority;
 
     @ManyToMany(mappedBy = "authorities")
-    private List<AuthUser> users;
+    private List<User> users;
 
     public Authority(String authority) {
         this.authority = authority;

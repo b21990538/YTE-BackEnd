@@ -1,4 +1,4 @@
-package yte.thebackend.pojo;
+package yte.thebackend.common.enums;
 
 public enum AccountTypes {
     STUDENT,

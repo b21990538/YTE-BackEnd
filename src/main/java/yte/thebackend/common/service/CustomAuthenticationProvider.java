@@ -1,4 +1,4 @@
-package yte.thebackend.service;
+package yte.thebackend.common.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;

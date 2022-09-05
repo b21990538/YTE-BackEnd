@@ -1,4 +1,4 @@
-package yte.thebackend.pojo;
+package yte.thebackend.login.dto;
 
 import javax.validation.constraints.NotBlank;
 

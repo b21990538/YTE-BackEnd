@@ -1,4 +1,4 @@
-package yte.thebackend.controller;
+package yte.thebackend.login.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import yte.thebackend.pojo.LoginRequest;
-import yte.thebackend.pojo.LoginResponse;
-import yte.thebackend.service.LoginService;
+import yte.thebackend.login.dto.LoginRequest;
+import yte.thebackend.login.dto.LoginResponse;
+import yte.thebackend.login.service.LoginService;
 
 import javax.validation.Valid;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) {
-        return loginService.login(loginRequest);
+        return LoginResponse.fromEntity(loginService.login(loginRequest));
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

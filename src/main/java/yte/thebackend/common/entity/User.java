@@ -1,4 +1,4 @@
-package yte.thebackend.entity;
+package yte.thebackend.common.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,31 +13,30 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class AuthUser implements UserDetails {
+@Table(name = "user", schema = "public")
+public class User extends BaseEntity implements UserDetails {
 
-    @Id
-    @Column(name = "user_id")
-    private Long id;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    @Column(unique = true)
     private String username;
     private String password;
     private Boolean isEnabled;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE) // TODO check cascade types
+    private String name;
+    private String surname;
+    private String email;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH}) // TODO check cascade types
     @JoinTable(name = "user_authorities", joinColumns = @JoinColumn(name = "auth_user_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id"))
     private List<Authority> authorities;
 
-    public AuthUser(String username, String password, List<Authority> authorities) {
+    public User(String username, String password, List<Authority> authorities, String name, String surname,
+                String email) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
         this.isEnabled = true;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
     }
 
     @Override
@@ -68,7 +67,14 @@ public class AuthUser implements UserDetails {
         return authListStr;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void assignStudentNo() {
+        this.username = String.valueOf(id + 21990538);
+    }
+
+    public String getFirstAuthority() {
+        if (authorities.isEmpty()) {
+            return "";
+        }
+        return authorities.get(0).getAuthority();
     }
 }

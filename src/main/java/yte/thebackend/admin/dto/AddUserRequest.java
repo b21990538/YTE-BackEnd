@@ -1,4 +1,6 @@
-package yte.thebackend.pojo;
+package yte.thebackend.admin.dto;
+
+import yte.thebackend.common.enums.AccountTypes;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package yte.thebackend.service;
+package yte.thebackend.login.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,9 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import yte.thebackend.entity.AuthUser;
-import yte.thebackend.pojo.LoginRequest;
-import yte.thebackend.pojo.LoginResponse;
+import yte.thebackend.common.entity.User;
+import yte.thebackend.login.dto.LoginRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class LoginService {
 
     private final AuthenticationManager authenticationManager;
 
-    public LoginResponse login(LoginRequest loginRequest) {
+    public User login(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.username(),
                 loginRequest.password());
 
@@ -27,9 +26,6 @@ public class LoginService {
         newContext.setAuthentication(authenticatedAuthentication);
         SecurityContextHolder.setContext(newContext);
 
-        AuthUser authUser = (AuthUser) authenticatedAuthentication.getPrincipal();
-
-        return new LoginResponse(authUser.getId(),
-                authUser.getUsername(), authUser.getStringAuthorities());  // TODO auth success
+        return (User) authenticatedAuthentication.getPrincipal();  // TODO auth success
     }
 }

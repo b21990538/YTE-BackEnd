@@ -1,9 +1,7 @@
-package yte.thebackend.repository;
+package yte.thebackend.common.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import yte.thebackend.entity.Authority;
-
-import java.util.Optional;
+import yte.thebackend.common.entity.Authority;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 
