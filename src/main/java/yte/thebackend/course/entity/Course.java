@@ -2,10 +2,11 @@ package yte.thebackend.course.entity;
 
 import yte.thebackend.common.entity.BaseEntity;
 import yte.thebackend.common.entity.User;
-import yte.thebackend.course.enums.CourseTime;
 import yte.thebackend.course.enums.CourseType;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name = "course", schema = "public")
@@ -15,8 +16,10 @@ public class Course extends BaseEntity {
     private String description;
     private CourseType type;
     private String code;
-    // TODO onetomany time
-    // TODO time days
+
+    @Max(78)
+    @Min(11)    // ex: 13-> 1:monday, 3:3rd slot of day 10.40-11.30
+    private Integer dayNTime;   // TODO multiple slots
 
     @OneToOne
     @JoinColumn(name = "room_ID")
@@ -25,6 +28,10 @@ public class Course extends BaseEntity {
             CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public Integer getDayNTime() {
+        return dayNTime;
+    }
 
     public Room getRoom() {
         return room;
