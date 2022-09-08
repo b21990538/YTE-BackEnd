@@ -1,51 +1,51 @@
 package yte.thebackend.course.entity;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import yte.thebackend.common.entity.BaseEntity;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.course.enums.CourseType;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import java.util.List;
 
+@Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "course", schema = "public")
 public class Course extends BaseEntity {
 
     private String name;
     private String description;
+    @Enumerated(EnumType.STRING)
     private CourseType type;
     private String code;
 
-    @Max(78)
-    @Min(11)    // ex: 13-> 1:monday, 3:3rd slot of day 10.40-11.30
-    private Integer dayNTime;   // TODO multiple slots
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}) // TODO check cascade types
+    @JoinTable(name = "course_times", joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "time_id"))
+    private List<TimeSlot> timeSlots;
 
     @OneToOne
     @JoinColumn(name = "room_ID")
     private Room room;
+
     @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.REFRESH}, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "lecturer_id", nullable = false)
+    private User lecturer;
 
-    public Integer getDayNTime() {
-        return dayNTime;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
+    public Course(String name, String description, CourseType type, String code, List<TimeSlot> timeSlots,
+                  Room room, User lecturer) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.code = code;
+        this.timeSlots = timeSlots;
         this.room = room;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+        this.lecturer = lecturer;
     }
 }
