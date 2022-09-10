@@ -9,6 +9,7 @@ import yte.thebackend.common.entity.User;
 import yte.thebackend.course.enums.CourseType;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,7 +28,7 @@ public class Course extends BaseEntity {
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}) // TODO check cascade types
     @JoinTable(name = "course_times", joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = {@JoinColumn(name = "time_day"), @JoinColumn(name = "time_slot")})
-    private List<TimeSlot> timeSlots;
+    private List<TimeSlot> timeSlots = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "room_ID")
@@ -62,5 +63,15 @@ public class Course extends BaseEntity {
         this.description = description;
         this.type = type;
         this.code = code;
+    }
+
+    public void update(Course newCourse) {
+        this.name = newCourse.name;
+        this.description = newCourse.description;
+        this.type = newCourse.type;
+        this.code = newCourse.code;
+        this.timeSlots = newCourse.timeSlots;
+        this.room = newCourse.room;
+        this.lecturer = newCourse.lecturer;
     }
 }

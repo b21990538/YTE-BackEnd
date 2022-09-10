@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.course.dto.CourseAddRequest;
 import yte.thebackend.course.dto.CourseResponse;
+import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.service.CourseService;
 
 import javax.validation.Valid;
@@ -33,9 +34,22 @@ public class CourseController {
                 .toList();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'LECTURER', 'ASSISTANT')")
+    @GetMapping("/{id}")
+    public CourseResponse getCourse(@PathVariable Long id) {
+        return CourseResponse.fromEntity(courseService.getCourseById(id));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{id}")
+    public MessageResponse updateCourse(@RequestBody @Valid CourseAddRequest courseAddRequest,
+                                        @PathVariable Long id) {
+        return courseService.updateCourse(id, courseAddRequest.toEntity());
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
-    public MessageResponse deleteCourse(@PathVariable Long id) {
+    public MessageResponse deleteCourse(@PathVariable Long id) {    //TODO multiple deletions at once?
         return courseService.deleteCourse(id);
     }
 }

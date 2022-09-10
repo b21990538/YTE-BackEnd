@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ public class Authority extends BaseEntity implements GrantedAuthority {
     private String authority;
 
     @ManyToMany(mappedBy = "authorities")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Authority(String authority) {
         this.authority = authority;

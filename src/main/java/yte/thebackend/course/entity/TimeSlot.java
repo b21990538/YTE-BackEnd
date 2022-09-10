@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import yte.thebackend.course.compositeKey.CompositeKey;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -21,7 +22,7 @@ public class TimeSlot {
     private Integer slot;
 
     @ManyToMany(mappedBy = "timeSlots")
-    private List<Course> courses;
+    private List<Course> courses = new ArrayList<>();
 
     public TimeSlot(Integer day, Integer slot) {
         this.day = day;

@@ -40,9 +40,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<Authority> authorityList2 = new ArrayList<>();
         authorityList2.add(authorityADMIN);
         List<Authority> authorityList3 = new ArrayList<>();
-        authorityList2.add(authorityLECTURER);
+        authorityList3.add(authorityLECTURER);
         List<Authority> authorityList4 = new ArrayList<>();
-        authorityList2.add(authorityASSISTANT);
+        authorityList4.add(authorityASSISTANT);
 
         userRepository.save(new User("user", passwordEncoder.encode("user"),
                 authorityList1, "User", "Surname", "bla@bla.com" ));

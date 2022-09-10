@@ -26,7 +26,7 @@ public class User extends BaseEntity implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH}) // TODO check cascade types
     @JoinTable(name = "user_authorities", joinColumns = @JoinColumn(name = "auth_user_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id"))
-    private List<Authority> authorities;
+    private List<Authority> authorities = new ArrayList<>();
 
     public User(String username, String password, List<Authority> authorities, String name, String surname,
                 String email) {
