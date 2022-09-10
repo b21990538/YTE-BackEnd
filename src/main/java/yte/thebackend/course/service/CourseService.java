@@ -3,6 +3,7 @@ package yte.thebackend.course.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.User;
+import yte.thebackend.common.enums.AccountTypes;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
@@ -12,6 +13,8 @@ import yte.thebackend.course.repository.CourseRepository;
 import yte.thebackend.course.repository.RoomRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,5 +108,32 @@ public class CourseService {
 
         courseRepository.save(oldCourse);
         return new MessageResponse("Course with id %d has been updated".formatted(id), ResultType.SUCCESS);
+    }
+
+    public List<Course> getMyCourses(User user) {
+        String role = user.getFirstAuthority();
+
+        if (role.equals(AccountTypes.LECTURER.name())) {
+            return getLecturerCourses(user.getId());
+        }
+        if (role.equals(AccountTypes.ASSISTANT.name())) {
+            return getAssistantCourses(user.getId());
+        }
+
+        return getStudentCourses(user.getId());
+    }
+
+    private List<Course> getStudentCourses(Long id) {
+        //TODO
+        return new ArrayList<>();
+    }
+
+    private List<Course> getAssistantCourses(Long id) {
+        //TODO
+        return new ArrayList<>();
+    }
+
+    private List<Course> getLecturerCourses(Long id) {
+        return courseRepository.findByLecturer_Id(id);
     }
 }

@@ -7,7 +7,7 @@ import yte.thebackend.common.entity.User;
 import yte.thebackend.login.dto.LoginResponse;
 
 @RestController
-public class TempController {
+public class SessionController {
     @GetMapping("/sessionValid")
     public LoginResponse isSessionValid(Authentication authentication) {
         return LoginResponse.fromEntity(((User) authentication.getPrincipal()));
