@@ -26,7 +26,7 @@ public class Course extends BaseEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}) // TODO check cascade types
     @JoinTable(name = "course_times", joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "time_id"))
+            inverseJoinColumns = {@JoinColumn(name = "time_day"), @JoinColumn(name = "time_slot")})
     private List<TimeSlot> timeSlots;
 
     @OneToOne
@@ -38,6 +38,14 @@ public class Course extends BaseEntity {
     @JoinColumn(name = "lecturer_id", nullable = false)
     private User lecturer;
 
+    public void setLecturer(User lecturer) {
+        this.lecturer = lecturer;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
     public Course(String name, String description, CourseType type, String code, List<TimeSlot> timeSlots,
                   Room room, User lecturer) {
         this.name = name;
@@ -47,5 +55,12 @@ public class Course extends BaseEntity {
         this.timeSlots = timeSlots;
         this.room = room;
         this.lecturer = lecturer;
+    }
+
+    public Course(String name, String description, CourseType type, String code) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.code = code;
     }
 }

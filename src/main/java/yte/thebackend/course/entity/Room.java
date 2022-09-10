@@ -1,5 +1,6 @@
 package yte.thebackend.course.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yte.thebackend.common.entity.BaseEntity;
 
@@ -7,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @Table(name = "room")
 public class Room extends BaseEntity {

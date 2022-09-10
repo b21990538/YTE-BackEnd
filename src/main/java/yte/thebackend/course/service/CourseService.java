@@ -3,21 +3,13 @@ package yte.thebackend.course.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.User;
-import yte.thebackend.common.enums.AccountTypes;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
-import yte.thebackend.course.dto.CourseAddRequest;
-import yte.thebackend.course.dto.TimeSlotDTO;
 import yte.thebackend.course.entity.Course;
-import yte.thebackend.course.entity.Room;
-import yte.thebackend.course.entity.TimeSlot;
 import yte.thebackend.course.repository.CourseRepository;
 import yte.thebackend.course.repository.RoomRepository;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,33 +21,38 @@ public class CourseService {
     private final RoomRepository roomRepository;
 
 
-    public MessageResponse addCourse(CourseAddRequest courseAddRequest) {
-        Optional<User> OptLecturer = userRepository.findByUsername(courseAddRequest.lectUsername());
+    public MessageResponse addCourse(Course course) {
+        String lecturerUsername = course.getLecturer().getUsername();
+        Optional<User> OptLecturer = userRepository.findByUsername(lecturerUsername);
+
         if (OptLecturer.isEmpty()) {
-            return new MessageResponse("Lecturer with username %s not found".formatted(courseAddRequest.lectUsername()),
+            return new MessageResponse("Lecturer with username %s not found".formatted(lecturerUsername),
                     ResultType.ERROR);
         }
+
         User lecturer = OptLecturer.get();
         String role = lecturer.getAuthorities().get(0).getAuthority();
 
         if (!role.equals("LECTURER")) {
-            return new MessageResponse("User %s is not a lecturer".formatted(courseAddRequest.lectUsername()),
+            return new MessageResponse("User %s is not a lecturer".formatted(lecturerUsername),
                     ResultType.ERROR);
         }
 
-        Room room = new Room(courseAddRequest.room());
-        room = roomRepository.save(room);
-        List<TimeSlot> timeSlots = new ArrayList<>();
+        course.setRoom(roomRepository.save(course.getRoom()));
+        course.setLecturer(lecturer);
 
-        for (TimeSlotDTO timeSlotDTO :
-                courseAddRequest.timeSlots()) {
-            timeSlots.add(new TimeSlot(timeSlotDTO.day()*10 + timeSlotDTO.slot()));
-        }
+        courseRepository.save(course);
 
-        courseRepository.save(new Course(courseAddRequest.name(), courseAddRequest.description(),
-                courseAddRequest.type(), courseAddRequest.code(),
-                timeSlots, room, lecturer));
+        return new MessageResponse("Course added", ResultType.SUCCESS);
+    }
 
-        return new MessageResponse("Success", ResultType.SUCCESS);
+    public List<Course> getCourses() {
+        return courseRepository.findAll();
+    }
+
+    public MessageResponse deleteCourse(Long id) {
+        courseRepository.deleteById(id);
+
+        return new MessageResponse("Course deleted", ResultType.SUCCESS);
     }
 }

@@ -1,31 +1,32 @@
 package yte.thebackend.course.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import yte.thebackend.course.compositeKey.CompositeKey;
 
 import javax.persistence.*;
 import java.util.List;
 
 @NoArgsConstructor
+@Getter
 @Entity
 @Table(name = "time_slot", schema = "public")
+@IdClass(CompositeKey.class)
 public class TimeSlot {
-    //id directly represents day and time slot
-    //ex: 13-> 1:monday, 3:3rd slot of day 10.40-11.30
-    //11 to 58
     @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @Column(name = "day", nullable = false)
+    private Integer day;
+    @Id
+    @Column(name = "slot", nullable = false)
+    private Integer slot;
 
     @ManyToMany(mappedBy = "timeSlots")
     private List<Course> courses;
 
-    public TimeSlot(Integer timeSlot) {
-        this.id = timeSlot;
+    public TimeSlot(Integer day, Integer slot) {
+        this.day = day;
+        this.slot = slot;
     }
-
-    public Integer getId() {
-        return id;
-    }
-
-
 }
+
+

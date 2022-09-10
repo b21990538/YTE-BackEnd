@@ -1,5 +1,8 @@
 package yte.thebackend.course.dto;
 
+import yte.thebackend.common.entity.User;
+import yte.thebackend.course.entity.Course;
+import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.enums.CourseType;
 
 import javax.validation.constraints.NotBlank;
@@ -21,4 +24,18 @@ public record CourseAddRequest(
         @NotBlank(message = "Lecturer username cannot be empty")
         String lectUsername
 ) {
+
+    public Course toEntity() {
+        return new Course(
+                name,
+                description,
+                type,
+                code,
+                timeSlots.stream()
+                        .map(TimeSlotDTO::toEntity)
+                        .toList(),
+                new Room(room),
+                new User(lectUsername)
+        );
+    }
 }

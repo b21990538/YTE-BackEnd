@@ -1,5 +1,7 @@
 package yte.thebackend.course.dto;
 
+import yte.thebackend.course.entity.TimeSlot;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -11,4 +13,11 @@ public record TimeSlotDTO(
         @Max(value = 8, message = "slot value cannot be more than 8")
         Integer slot
 ) {
+        public TimeSlot toEntity() {
+                return new TimeSlot(day, slot);
+        }
+
+        public static TimeSlotDTO fromEntity(TimeSlot timeSlot) {
+                return new TimeSlotDTO(timeSlot.getDay(), timeSlot.getSlot());
+        }
 }
