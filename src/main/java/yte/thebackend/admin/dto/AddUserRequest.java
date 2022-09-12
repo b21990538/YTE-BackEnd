@@ -8,14 +8,15 @@ import javax.validation.constraints.Size;
 
 public record AddUserRequest(
         AccountTypes type,
-        @NotBlank
-        @Size(max = 255)
+        @NotBlank(message = "Name cannot be empty.")
+        @Size(max = 255, message = "Name too long.")
         String name,
-        @NotBlank
-        @Size(max = 255)
+        @NotBlank(message = "Surname cannot be empty.")
+        @Size(max = 255, message = "Surname too long.")
         String surname,
-        @Email
-        @Size(max = 255)
+        @NotBlank(message = "Email not valid.")
+        @Email(message = "Email not valid.")
+        @Size(max = 255, message = "Email too long.")
         String email
 ) {
 }

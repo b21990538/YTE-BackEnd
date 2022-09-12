@@ -13,7 +13,7 @@ import yte.thebackend.common.service.CustomAuthenticationProvider;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
-    @Bean   // TODO exception handle
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests()
                 .antMatchers("/login").permitAll()
@@ -21,7 +21,7 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable()
                 .logout().and()     // TODO logout disabled?
-                .csrf().disable()   // TODO csrf?
+                .csrf().disable()
                 .build();
     }
 

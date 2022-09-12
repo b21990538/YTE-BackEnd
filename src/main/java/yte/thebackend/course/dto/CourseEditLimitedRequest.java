@@ -12,14 +12,14 @@ import java.util.List;
 
 public record CourseEditLimitedRequest(
         @NotBlank(message = "Course description cannot be empty")
-        @Size(max = 255)
+        @Size(max = 1024, message = "Description too long.")
         String description,
 
-        @Size(min = 1, message = "Course has no time slot allotted")
+        @Size(min = 1, message = "Course has no time slot allotted.")
         List<TimeSlotDTO> timeSlots,
 
-        @NotBlank(message = "Room name cannot be empty")
-        @Size(max = 255)
+        @NotBlank(message = "Room name cannot be empty.")
+        @Size(max = 255, message = "Room name too long.")
         String room
 ) {
     public Course toEntity() {

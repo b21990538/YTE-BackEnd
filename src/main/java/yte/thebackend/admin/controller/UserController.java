@@ -2,18 +2,22 @@ package yte.thebackend.admin.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yte.thebackend.admin.dto.AddUserRequest;
 import yte.thebackend.admin.dto.AddUserResponse;
 import yte.thebackend.admin.dto.UserResponse;
 import yte.thebackend.admin.service.UserService;
+import yte.thebackend.common.response.MessageResponse;
+import yte.thebackend.common.response.ResultType;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +37,12 @@ public class UserController {
         return userService.getAllUsers().stream()
                 .map(UserResponse::fromEntity)
                 .toList();
+    }
+
+    @ExceptionHandler(value = {DataIntegrityViolationException.class, NoSuchElementException.class})
+    public ResponseEntity<MessageResponse> handleValidationErrors(RuntimeException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new MessageResponse(exception.getMessage(), ResultType.ERROR));
     }
 }

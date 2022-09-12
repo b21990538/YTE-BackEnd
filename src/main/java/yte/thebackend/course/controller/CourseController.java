@@ -1,10 +1,15 @@
 package yte.thebackend.course.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import yte.thebackend.common.response.MessageResponse;
+import yte.thebackend.common.response.ResultType;
 import yte.thebackend.course.dto.CourseAddRequest;
 import yte.thebackend.course.dto.CourseResponse;
 import yte.thebackend.course.entity.Course;
@@ -12,6 +17,7 @@ import yte.thebackend.course.service.CourseService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor

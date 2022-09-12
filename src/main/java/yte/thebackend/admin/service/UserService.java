@@ -12,8 +12,7 @@ import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.repository.AuthorityRepository;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +25,12 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    //TODO username lowercase, name upper
+
     @Transactional
     public AddUserResponse addUser(AddUserRequest addUserRequest) {
         String username = null;
         if (addUserRequest.type() != AccountTypes.STUDENT) {
-            username = addUserRequest.name() + "." + addUserRequest.surname();
+            username = prepUsername(addUserRequest.name(), addUserRequest.surname());
         }
 
         StringBuilder password = new StringBuilder();
@@ -42,12 +41,17 @@ public class UserService {
             password.append(c);
         }
 
-        Authority authority = authorityRepository.findByAuthority(addUserRequest.type().name());
+        Optional<Authority> OptAuthority = authorityRepository.findByAuthority(addUserRequest.type().name());
+        checkAuthorityExists(addUserRequest, OptAuthority);
+        Authority authority = OptAuthority.get();
+
         List<Authority> authorityList = new ArrayList<>();
         authorityList.add(authority);
 
+        //TODO same username conflict: append incremented number
         User savedUser = userRepository.save(new User(username, passwordEncoder.encode(password.toString()),
-                authorityList, addUserRequest.name(), addUserRequest.surname(), addUserRequest.email()));
+                authorityList, prepName(addUserRequest.name()), prepName(addUserRequest.surname()),
+                addUserRequest.email()));
 
         if (addUserRequest.type() == AccountTypes.STUDENT) {
             savedUser.assignStudentNo();
@@ -55,5 +59,37 @@ public class UserService {
         }
 
         return new AddUserResponse(savedUser.getUsername(), password.toString());
+    }
+
+    private static void checkAuthorityExists(AddUserRequest addUserRequest, Optional<Authority> OptAuthority) {
+        if (OptAuthority.isEmpty()) {
+            throw new NoSuchElementException("Authority %s not found".formatted(addUserRequest.type().name()));
+        }
+    }
+
+    public static String prepName(String name) {
+        StringBuilder preppedName = new StringBuilder();
+        String[] splitNames = name.split("\\s+");
+        for (String splitName: splitNames) {
+            preppedName.append(normalizeAndCapitalize(splitName));
+        }
+        return preppedName.toString();
+    }
+
+    public static String prepUsername(String name, String surname) {
+        String combinedName = String.join("", name.split("\\s+"))
+                .toLowerCase(Locale.ROOT);
+        String combinedSurname = String.join("", surname.split("\\s+"))
+                .toLowerCase(Locale.ROOT);
+
+        return (combinedName + "." + combinedSurname);
+    }
+
+    public static String normalizeAndCapitalize(String str) {
+        if(str == null || str.isEmpty()) {
+            return str;
+        }
+
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase(Locale.ROOT);
     }
 }

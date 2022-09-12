@@ -26,6 +26,6 @@ public class LoginService {
         newContext.setAuthentication(authenticatedAuthentication);
         SecurityContextHolder.setContext(newContext);
 
-        return (User) authenticatedAuthentication.getPrincipal();  // TODO auth success
+        return (User) authenticatedAuthentication.getPrincipal();
     }
 }

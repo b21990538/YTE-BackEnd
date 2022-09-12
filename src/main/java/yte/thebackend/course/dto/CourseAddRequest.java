@@ -12,23 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record CourseAddRequest(
-        @NotBlank(message = "Course name cannot be empty")
-        @Size(max = 255)
+        @NotBlank(message = "Course name cannot be empty.")
+        @Size(max = 255, message = "Name too long.")
         String name,
-        @NotBlank(message = "Course description cannot be empty")
-        @Size(max = 255)
+        @NotBlank(message = "Course description cannot be empty.")
+        @Size(max = 1024, message = "Description too long.")
         String description,
         CourseType type,
-        @NotBlank(message = "Course code cannot be empty")
-        @Size(max = 255)
+        @NotBlank(message = "Course code cannot be empty.")
+        @Size(max = 255, message = "Code too long.")
         String code,
-        @Size(min = 1, message = "Course has no time slot allotted")
+        @Size(min = 1, message = "Course has no time slot allotted.")
         List<TimeSlotDTO> timeSlots,
-        @NotBlank(message = "Room name cannot be empty")
-        @Size(max = 255)
+        @NotBlank(message = "Room name cannot be empty.")
+        @Size(max = 255, message = "Room name too long.")
         String room,
-        @NotBlank(message = "Lecturer username cannot be empty")
-        @Size(max = 255)
+        @NotBlank(message = "Lecturer username cannot be empty.")
+        @Size(max = 255, message = "Lecturer username too long.")
         String lectUsername
 ) {
 

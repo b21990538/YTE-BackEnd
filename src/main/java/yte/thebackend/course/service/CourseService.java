@@ -3,7 +3,6 @@ package yte.thebackend.course.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.User;
-import yte.thebackend.common.enums.AccountTypes;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
@@ -13,8 +12,6 @@ import yte.thebackend.course.repository.CourseRepository;
 import yte.thebackend.course.repository.RoomRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,33 +24,7 @@ public class CourseService {
     private final RoomRepository roomRepository;
 
     public MessageResponse addCourse(Course course) {
-        String lecturerUsername = course.getLecturer().getUsername();
-        Optional<User> OptLecturer = userRepository.findByUsername(lecturerUsername);
-
-        if (OptLecturer.isEmpty()) {
-            return new MessageResponse("Lecturer with username %s not found".formatted(lecturerUsername),
-                    ResultType.ERROR);
-        }
-
-        User lecturer = OptLecturer.get();
-        String role = lecturer.getAuthorities().get(0).getAuthority();
-
-        if (!role.equals("LECTURER")) {
-            return new MessageResponse("User %s is not a lecturer".formatted(lecturerUsername),
-                    ResultType.ERROR);
-        }
-
-        Optional<Room> OptRoom = roomRepository.findByName(course.getRoom().getName());
-
-        if (OptRoom.isEmpty()) {
-            return new MessageResponse("Room with name %s not found".formatted(course.getRoom().getName()),
-                    ResultType.ERROR);
-        }
-
-        course.setRoom(OptRoom.get());
-        course.setLecturer(lecturer);
-
-        courseRepository.save(course);
+        validateAndAddCourse(course);
 
         return new MessageResponse("Course added", ResultType.SUCCESS);
     }
@@ -77,35 +48,46 @@ public class CourseService {
         Course oldCourse = getCourseById(id);
         oldCourse.update(newCourse);
 
-        String lecturerUsername = oldCourse.getLecturer().getUsername();
+        validateAndAddCourse(oldCourse);
+        return new MessageResponse("Course with id %d has been updated".formatted(id), ResultType.SUCCESS);
+    }
+
+    public void validateAndAddCourse(Course course) {
+        String lecturerUsername = course.getLecturer().getUsername();
         Optional<User> OptLecturer = userRepository.findByUsername(lecturerUsername);
 
-        if (OptLecturer.isEmpty()) {
-            return new MessageResponse("Lecturer with username %s not found".formatted(lecturerUsername),
-                    ResultType.ERROR);
-        }
-
+        checkUserWithUsernameExists(lecturerUsername, OptLecturer);
         User lecturer = OptLecturer.get();
         String role = lecturer.getAuthorities().get(0).getAuthority();
 
-        if (!role.equals("LECTURER")) {
-            return new MessageResponse("User %s is not a lecturer".formatted(lecturerUsername),
-                    ResultType.ERROR);
-        }
+        checkUserIsLecturer(lecturerUsername, role);
 
-        Optional<Room> OptRoom = roomRepository.findByName(oldCourse.getRoom().getName());
+        Room room = getRoomFromCourse(course);
+
+        course.setRoom(room);
+        course.setLecturer(lecturer);
+
+        courseRepository.save(course);
+    }
+
+    public Room getRoomFromCourse(Course course) {
+        Optional<Room> OptRoom = roomRepository.findByName(course.getRoom().getName());
 
         if (OptRoom.isEmpty()) {
-            return new MessageResponse("Room with name %s not found".formatted(oldCourse.getRoom().getName()),
-                    ResultType.ERROR);
+            throw new EntityNotFoundException("Room with name %s not found".formatted(course.getRoom().getName()));
         }
+        return OptRoom.get();
+    }
 
-        Room room = OptRoom.get();
+    public static void checkUserIsLecturer(String lecturerUsername, String role) {
+        if (!role.equals("LECTURER")) {
+            throw new RuntimeException("User %s is not a lecturer".formatted(lecturerUsername));
+        }
+    }
 
-        oldCourse.setRoom(room);
-        oldCourse.setLecturer(lecturer);
-
-        courseRepository.save(oldCourse);
-        return new MessageResponse("Course with id %d has been updated".formatted(id), ResultType.SUCCESS);
+    public static void checkUserWithUsernameExists(String username, Optional<User> OptUser) {
+        if (OptUser.isEmpty()) {
+            throw new EntityNotFoundException("Lecturer with username %s not found".formatted(username));
+        }
     }
 }

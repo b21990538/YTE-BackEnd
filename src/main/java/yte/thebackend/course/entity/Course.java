@@ -21,6 +21,7 @@ import java.util.Set;
 public class Course extends BaseEntity {
 
     private String name;
+    @Column(length = 1024)
     private String description;
     @Enumerated(EnumType.STRING)
     private CourseType type;

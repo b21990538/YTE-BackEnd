@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import yte.thebackend.common.response.MessageResponse;
+import yte.thebackend.common.response.ResultType;
 import yte.thebackend.login.dto.LoginRequest;
 import yte.thebackend.login.dto.LoginResponse;
 import yte.thebackend.login.service.LoginService;
@@ -31,20 +33,10 @@ public class LoginController {
         return LoginResponse.fromEntity(loginService.login(loginRequest));
     }
 
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationErrors(MethodArgumentNotValidException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(exception.getFieldErrors()
-                        .stream()
-                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                        .collect(Collectors.joining("\n")));
-    }
-
     @ExceptionHandler(value = {UsernameNotFoundException.class, BadCredentialsException.class})
-    public ResponseEntity<String> handleValidationErrors(AuthenticationException exception) {
+    public ResponseEntity<MessageResponse> handleValidationErrors(AuthenticationException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body("Wrong username or password");
+                .body(new MessageResponse("Wrong username or password", ResultType.ERROR));
     }
 }

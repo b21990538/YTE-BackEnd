@@ -30,10 +30,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         authorityRepository.save(new Authority("ASSISTANT"));
         authorityRepository.save(new Authority("LECTURER"));
 
-        Authority authoritySTUDENT = authorityRepository.findByAuthority("STUDENT");
-        Authority authorityADMIN = authorityRepository.findByAuthority("ADMIN");
-        Authority authorityLECTURER = authorityRepository.findByAuthority("LECTURER");
-        Authority authorityASSISTANT = authorityRepository.findByAuthority("ASSISTANT");
+        Authority authoritySTUDENT = authorityRepository.findByAuthority("STUDENT").get();
+        Authority authorityADMIN = authorityRepository.findByAuthority("ADMIN").get();
+        Authority authorityLECTURER = authorityRepository.findByAuthority("LECTURER").get();
+        Authority authorityASSISTANT = authorityRepository.findByAuthority("ASSISTANT").get();
 
         List<Authority> authorityList1 = new ArrayList<>();
         authorityList1.add(authoritySTUDENT);
@@ -54,7 +54,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 authorityList4, "Assis", "Tant", "asis@tant.com"));
     }
 
-    @Override   // TODO handle exception
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username %s is not present".formatted(username)));

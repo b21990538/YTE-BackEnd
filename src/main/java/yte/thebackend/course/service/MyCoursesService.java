@@ -13,6 +13,7 @@ import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.repository.CourseRepository;
 import yte.thebackend.course.repository.RoomRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class MyCoursesService {
     }
 
     private List<Course> getStudentCourses(Long studentUserId) {
-        //TODO
+        //TODO get student courses
         return new ArrayList<>();
     }
 
@@ -54,27 +55,14 @@ public class MyCoursesService {
     }
     //TODO remove assistant? Transactional?
     public MessageResponse addAssistant(User lecturer, Long courseId, String assistantUsername) {
-        Optional<Course> OptCourse = courseRepository.findById(courseId);
         Optional<User> OptAssistant = userRepository.findByUsername(assistantUsername);
+        CourseService.checkUserWithUsernameExists(assistantUsername, OptAssistant);
 
-        if (OptCourse.isEmpty()) {
-            return new MessageResponse("Course with id %d not found".formatted(courseId), ResultType.ERROR);
-        }
-        if (OptAssistant.isEmpty()) {
-            return new MessageResponse("Assistant %s not found".formatted(assistantUsername), ResultType.ERROR);
-        }
-
-        Course course = OptCourse.get();
+        Course course = courseService.getCourseById(courseId);
         User assistant = OptAssistant.get();
 
-        if (!course.getLecturer().equals(lecturer)) {
-            return new MessageResponse("You are not the lecturer of the course with id %d".formatted(courseId),
-                    ResultType.ERROR);
-        }
-
-        if (!assistant.getFirstAuthority().equals(AccountTypes.ASSISTANT.name())) {
-            return new MessageResponse("User %s is not an assistant".formatted(assistantUsername), ResultType.ERROR);
-        }
+        checkUserIsLecturerOfCourse(lecturer, courseId, course);
+        checkUserIsAssistant(assistantUsername, assistant);
 
         course.addAssistant(assistant);
 
@@ -87,29 +75,43 @@ public class MyCoursesService {
         Course oldCourse = courseService.getCourseById(courseId);
         oldCourse.editLimitedUpdate(newCourse);
 
-        Optional<Room> OptRoom = roomRepository.findByName(oldCourse.getRoom().getName());
+        checkUserIsGivingCourse(user, courseId, oldCourse);
 
-        if (OptRoom.isEmpty()) {
-            return new MessageResponse("Room with name %s not found".formatted(oldCourse.getRoom().getName()),
-                    ResultType.ERROR);
-        }
-
-        if (user.getFirstAuthority().equals(AccountTypes.LECTURER.name())) {
-            if (!oldCourse.getLecturer().equals(user)) {
-                return new MessageResponse("You are not the lecturer of the course with id %d".formatted(courseId),
-                        ResultType.ERROR);
-            }
-        } else {    //TODO check user giving course
-            if (!oldCourse.getAssistants().contains(user)) {
-                return new MessageResponse("You are not an assistant of the course with id %d".formatted(courseId),
-                        ResultType.ERROR);
-            }
-        }
-
-        Room room = OptRoom.get();
+        Room room = courseService.getRoomFromCourse(oldCourse);
         oldCourse.setRoom(room);
 
         courseRepository.save(oldCourse);
         return new MessageResponse("Course with id %d has been updated".formatted(courseId), ResultType.SUCCESS);
+    }
+
+    private static void checkUserIsAssistant(String assistantUsername, User assistant) {
+        if (!assistant.getFirstAuthority().equals(AccountTypes.ASSISTANT.name())) {
+            throw new RuntimeException("User %s is not an assistant".formatted(assistantUsername));
+        }
+    }
+
+    private static void checkUserIsGivingCourse(User user, Long courseId, Course course) {
+        if (user.getFirstAuthority().equals(AccountTypes.LECTURER.name())) {
+            checkUserIsLecturerOfCourse(user, courseId, course);
+        } else {
+            if (!course.getAssistants().contains(user)) {
+                throw new RuntimeException("You are not an assistant of the course with id %d".formatted(courseId));
+            }
+        }
+    }
+
+    private static void checkUserIsLecturerOfCourse(User user, Long courseId, Course course) {
+        if (!course.getLecturer().equals(user)) {
+            throw new RuntimeException("You are not the lecturer of the course with id %d".formatted(courseId));
+        }
+    }
+
+    private Optional<Room> getOptionalRoom(Course course) {
+        Optional<Room> OptRoom = roomRepository.findByName(course.getRoom().getName());
+
+        if (OptRoom.isEmpty()) {
+            throw new RuntimeException("Room with name %s not found".formatted(course.getRoom().getName()));
+        }
+        return OptRoom;
     }
 }
