@@ -26,7 +26,7 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
+    //TODO username lowercase, name upper
     @Transactional
     public AddUserResponse addUser(AddUserRequest addUserRequest) {
         String username = null;

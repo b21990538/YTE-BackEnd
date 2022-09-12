@@ -10,7 +10,9 @@ import yte.thebackend.course.enums.CourseType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -38,6 +40,14 @@ public class Course extends BaseEntity {
             CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "lecturer_id", nullable = false)
     private User lecturer;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    private Set<User> assistants = new HashSet<>();
+
+    public void addAssistant(User assistant) {
+        assistants.add(assistant);
+    }
 
     public void setLecturer(User lecturer) {
         this.lecturer = lecturer;
@@ -73,5 +83,11 @@ public class Course extends BaseEntity {
         this.timeSlots = newCourse.timeSlots;
         this.room = newCourse.room;
         this.lecturer = newCourse.lecturer;
+    }
+
+    public void editLimitedUpdate(Course newCourse) {
+        this.description = newCourse.description;
+        this.timeSlots = newCourse.timeSlots;
+        this.room = newCourse.room;
     }
 }

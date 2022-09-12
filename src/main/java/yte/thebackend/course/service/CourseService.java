@@ -26,7 +26,6 @@ public class CourseService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
 
-
     public MessageResponse addCourse(Course course) {
         String lecturerUsername = course.getLecturer().getUsername();
         Optional<User> OptLecturer = userRepository.findByUsername(lecturerUsername);
@@ -108,32 +107,5 @@ public class CourseService {
 
         courseRepository.save(oldCourse);
         return new MessageResponse("Course with id %d has been updated".formatted(id), ResultType.SUCCESS);
-    }
-
-    public List<Course> getMyCourses(User user) {
-        String role = user.getFirstAuthority();
-
-        if (role.equals(AccountTypes.LECTURER.name())) {
-            return getLecturerCourses(user.getId());
-        }
-        if (role.equals(AccountTypes.ASSISTANT.name())) {
-            return getAssistantCourses(user.getId());
-        }
-
-        return getStudentCourses(user.getId());
-    }
-
-    private List<Course> getStudentCourses(Long id) {
-        //TODO
-        return new ArrayList<>();
-    }
-
-    private List<Course> getAssistantCourses(Long id) {
-        //TODO
-        return new ArrayList<>();
-    }
-
-    private List<Course> getLecturerCourses(Long id) {
-        return courseRepository.findByLecturer_Id(id);
     }
 }
