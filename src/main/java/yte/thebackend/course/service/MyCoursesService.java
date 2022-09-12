@@ -11,9 +11,7 @@ import yte.thebackend.common.response.ResultType;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.repository.CourseRepository;
-import yte.thebackend.course.repository.RoomRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +22,6 @@ public class MyCoursesService {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
-    private final RoomRepository roomRepository;
 
     private final CourseService courseService;
 
@@ -104,14 +101,5 @@ public class MyCoursesService {
         if (!course.getLecturer().equals(user)) {
             throw new RuntimeException("You are not the lecturer of the course with id %d".formatted(courseId));
         }
-    }
-
-    private Optional<Room> getOptionalRoom(Course course) {
-        Optional<Room> OptRoom = roomRepository.findByName(course.getRoom().getName());
-
-        if (OptRoom.isEmpty()) {
-            throw new RuntimeException("Room with name %s not found".formatted(course.getRoom().getName()));
-        }
-        return OptRoom;
     }
 }
