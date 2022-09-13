@@ -45,9 +45,9 @@ public class MyCoursesController {
 
     @PreAuthorize("hasAuthority('LECTURER')")
     @PostMapping("/my-courses/assistant")
-    public MessageResponse addAssistant(Authentication authentication,
-                                        @RequestBody AssistantAddRequest assistantAddRequest) {
-        return myCoursesService.addAssistant((User) authentication.getPrincipal(), assistantAddRequest.courseId(),
+    public MessageResponse assignAssistant(Authentication authentication,
+                                           @RequestBody AssistantAddRequest assistantAddRequest) {
+        return myCoursesService.assignAssistant((User) authentication.getPrincipal(), assistantAddRequest.courseId(),
                 assistantAddRequest.assistantUsername());
     }
 }

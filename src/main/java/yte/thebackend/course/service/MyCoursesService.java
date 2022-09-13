@@ -51,7 +51,7 @@ public class MyCoursesService {
         return courseRepository.findByLecturer_Id(lecturerId);
     }
     //TODO remove assistant? Transactional?
-    public MessageResponse addAssistant(User lecturer, Long courseId, String assistantUsername) {
+    public MessageResponse assignAssistant(User lecturer, Long courseId, String assistantUsername) {
         Optional<User> OptAssistant = userRepository.findByUsername(assistantUsername);
         CourseService.checkUserWithUsernameExists(assistantUsername, OptAssistant);
 
@@ -81,13 +81,13 @@ public class MyCoursesService {
         return new MessageResponse("Course with id %d has been updated".formatted(courseId), ResultType.SUCCESS);
     }
 
-    private static void checkUserIsAssistant(String assistantUsername, User assistant) {
+    public static void checkUserIsAssistant(String assistantUsername, User assistant) {
         if (!assistant.getFirstAuthority().equals(AccountTypes.ASSISTANT.name())) {
             throw new RuntimeException("User %s is not an assistant".formatted(assistantUsername));
         }
     }
 
-    private static void checkUserIsGivingCourse(User user, Long courseId, Course course) {
+    public static void checkUserIsGivingCourse(User user, Long courseId, Course course) {
         if (user.getFirstAuthority().equals(AccountTypes.LECTURER.name())) {
             checkUserIsLecturerOfCourse(user, courseId, course);
         } else {
@@ -97,7 +97,7 @@ public class MyCoursesService {
         }
     }
 
-    private static void checkUserIsLecturerOfCourse(User user, Long courseId, Course course) {
+    public static void checkUserIsLecturerOfCourse(User user, Long courseId, Course course) {
         if (!course.getLecturer().equals(user)) {
             throw new RuntimeException("You are not the lecturer of the course with id %d".formatted(courseId));
         }

@@ -76,6 +76,10 @@ public class Course extends BaseEntity {
         this.code = code;
     }
 
+    public Course(Long id) {
+        this.id = id;
+    }
+
     public void update(Course newCourse) {
         this.name = newCourse.name;
         this.description = newCourse.description;

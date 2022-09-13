@@ -21,6 +21,8 @@ public class TimeSlot {
     @Column(name = "slot", nullable = false)
     private Integer slot;
 
+    // TODO Add localTime start/end, use day and localtime to check conflicts
+
     @ManyToMany(mappedBy = "timeSlots")
     private List<Course> courses = new ArrayList<>();
 
