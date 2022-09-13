@@ -17,16 +17,16 @@ public class AutocompleteService {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
 
-    public List<User> getLecturers(String like) {
+    public List<User> getLecturersByUsernameLike(String like) {
         Authority authorityLECTURER = authorityRepository.findByAuthority("LECTURER").get();
 
-        return userRepository.findByUsernameContainingAndAuthoritiesContaining(like, authorityLECTURER,
+        return userRepository.findByUsernameContainingIgnoreCaseAndAuthoritiesContaining(like, authorityLECTURER,
                 PageRequest.of(0, 10));
     }
 
-    public List<User> getAssistants(String like) {
+    public List<User> getAssistantsByUsernameLike(String like) {
         Authority authority = authorityRepository.findByAuthority("ASSISTANT").get();
-        return userRepository.findByUsernameContainingAndAuthoritiesContaining(like, authority,
+        return userRepository.findByUsernameContainingIgnoreCaseAndAuthoritiesContaining(like, authority,
                 PageRequest.of(0, 10));
     }
 }

@@ -13,5 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
-    List<User> findByUsernameContainingAndAuthoritiesContaining(String like, Authority authority, Pageable pageable);
+    List<User> findByUsernameContainingIgnoreCaseAndAuthoritiesContaining(
+            String like, Authority authority, Pageable pageable);
 }

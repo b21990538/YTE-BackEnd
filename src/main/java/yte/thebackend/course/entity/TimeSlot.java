@@ -2,7 +2,7 @@ package yte.thebackend.course.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import yte.thebackend.course.compositeKey.CompositeKey;
+import yte.thebackend.course.compositeKey.TimeSlotKey;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "time_slot", schema = "public")
-@IdClass(CompositeKey.class)
+@IdClass(TimeSlotKey.class)
 public class TimeSlot {
     @Id
     @Column(name = "day", nullable = false)

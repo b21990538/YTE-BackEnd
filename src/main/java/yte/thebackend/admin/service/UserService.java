@@ -70,8 +70,12 @@ public class UserService {
     public static String prepName(String name) {
         StringBuilder preppedName = new StringBuilder();
         String[] splitNames = name.split("\\s+");
-        for (String splitName: splitNames) {
+        for (int i = 0, splitNamesLength = splitNames.length; i < splitNamesLength; i++) {
+            String splitName = splitNames[i];
             preppedName.append(normalizeAndCapitalize(splitName));
+            if (i != splitNamesLength-1) {
+                preppedName.append(" ");
+            }
         }
         return preppedName.toString();
     }
