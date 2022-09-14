@@ -11,6 +11,8 @@ import yte.thebackend.common.response.ResultType;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.repository.CourseRepository;
+import yte.thebackend.student.entity.TakingCourse;
+import yte.thebackend.student.repository.TakingCourseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,8 @@ public class MyCoursesService {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
-
     private final CourseService courseService;
+    private final TakingCourseRepository takingCourseRepository;
 
     public List<Course> getMyCourses(User user) {
         String role = user.getFirstAuthority();
@@ -39,8 +41,10 @@ public class MyCoursesService {
     }
 
     private List<Course> getStudentCourses(Long studentUserId) {
-        //TODO get student courses
-        return new ArrayList<>();
+
+        return takingCourseRepository.findByStudent_Id(studentUserId).stream()
+                .map(TakingCourse::getCourse)
+                .toList();
     }
 
     private List<Course> getAssistantCourses(User assistant) {

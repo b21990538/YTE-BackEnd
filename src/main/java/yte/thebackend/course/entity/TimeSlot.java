@@ -2,7 +2,7 @@ package yte.thebackend.course.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import yte.thebackend.course.compositeKey.TimeSlotKey;
+import yte.thebackend.course.composite_key.TimeSlotKey;
 
 import javax.persistence.*;
 import java.util.ArrayList;

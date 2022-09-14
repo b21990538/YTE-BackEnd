@@ -1,14 +1,17 @@
-package yte.thebackend.course.compositeKey;
+package yte.thebackend.student.composite_key;
 
 import org.hibernate.proxy.HibernateProxy;
-import yte.thebackend.course.entity.TimeSlot;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TimeSlotKey implements Serializable {
-    private Integer day;
-    private Integer slot;
+public class TakingCourseKey implements Serializable {
+
+    @Column(name = "student_id")
+    private Long studentId;
+    @Column(name = "course_id")
+    private Long courseId;
 
     @Override
     public boolean equals(Object obj) {
@@ -24,17 +27,17 @@ public class TimeSlotKey implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TimeSlotKey other = (TimeSlotKey) obj;
-        if (this.day == null || this.slot == null) {
+        final TakingCourseKey other = (TakingCourseKey) obj;
+        if (this.studentId == null || this.courseId == null) {
             return false;
         } else {
-            return (this.day.equals(other.day) &&
-                    this.slot.equals(other.slot));
+            return (this.studentId.equals(other.studentId) &&
+                    this.courseId.equals(other.courseId));
         }
     }
 
     @Override
     public int hashCode() {
-        return (Objects.hash(day) + 31*Objects.hash(slot));
+        return (Objects.hash(studentId) + 31*Objects.hash(courseId));
     }
 }

@@ -16,7 +16,7 @@ public record ExamAddRequest(
         String name,
         @FutureOrPresent(message = "Exam date should be in the future.")
         LocalDateTime startTime,
-        @Size(max = 255, message = "Exam info too long.")
+        @Size(max = 1024, message = "Exam info too long.")
         String info,
         @NotBlank(message = "Room name cannot be empty.")
         @Size(max = 255, message = "Room name too long.")

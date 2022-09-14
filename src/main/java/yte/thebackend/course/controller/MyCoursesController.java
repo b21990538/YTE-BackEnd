@@ -37,7 +37,6 @@ public class MyCoursesController {
                 id, courseEditLimitedRequest.toEntity());
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'LECTURER', 'ASSISTANT')")
     @GetMapping("/course-page/{id}")
     public CoursePageResponse getCoursePage(@PathVariable Long id) {
         return CoursePageResponse.fromEntity(courseService.getCourseById(id));

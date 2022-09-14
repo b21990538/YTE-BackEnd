@@ -12,8 +12,15 @@ import yte.thebackend.course.service.CourseService;
 import yte.thebackend.course.service.MyCoursesService;
 import yte.thebackend.exam_hw.entity.Exam;
 import yte.thebackend.exam_hw.repository.ExamRepository;
+import yte.thebackend.student.entity.TakingCourse;
+import yte.thebackend.student.entity.TakingExam;
+import yte.thebackend.student.repository.TakingCourseRepository;
+import yte.thebackend.student.repository.TakingExamRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,9 +29,11 @@ public class ExamService {
 
     private final ExamRepository examRepository;
     private final RoomRepository roomRepository;
-
+    private final TakingCourseRepository takingCourseRepository;
+    private final TakingExamRepository takingExamRepository;
     private final CourseService courseService;
 
+    @Transactional
     public MessageResponse addExam(Exam exam, User user) {
         Room room = getRoomByName(exam.getRoom().getName());
         exam.setRoom(room);
@@ -34,7 +43,15 @@ public class ExamService {
 
         MyCoursesService.checkUserIsGivingCourse(user, course.getId(), course);
 
-        examRepository.save(exam);
+        Exam savedExam = examRepository.save(exam);
+
+        // Assign exam to students
+        List<TakingExam> takingExams = new ArrayList<>();
+        List<TakingCourse> takingCourses = takingCourseRepository.findByCourse_Id(course.getId());
+        for (TakingCourse takingCourse :takingCourses) {
+            takingExams.add(new TakingExam(takingCourse.getStudentId(), savedExam.getId()));
+        }
+        takingExamRepository.saveAll(takingExams);
 
         return new MessageResponse("Exam added successfully.", ResultType.SUCCESS);
     }
