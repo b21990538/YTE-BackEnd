@@ -31,7 +31,6 @@ public class TakingCourse {
     @JoinColumn(name = "course_id")
     private Course course;
 
-
     //TODO add total grade?
 
     public TakingCourse(Long studentId, Long courseId) {

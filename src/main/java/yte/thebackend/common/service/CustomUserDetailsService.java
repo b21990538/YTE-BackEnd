@@ -44,13 +44,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<Authority> authorityList4 = new ArrayList<>();
         authorityList4.add(authorityASSISTANT);
 
-        userRepository.save(new User("user", passwordEncoder.encode("user"),
+        userRepository.save(new User("21990538", passwordEncoder.encode("user"),
                 authorityList1, "User", "Surname", "bla@bla.com" ));
         userRepository.save(new User("admin", passwordEncoder.encode("admin"),
                 authorityList2, "Adam", "Driver", "adam@glol.com"));
-        userRepository.save(new User("yusuf", passwordEncoder.encode("yusuf"),
+        userRepository.save(new User("yusuf.sari", passwordEncoder.encode("yusuf"),
                 authorityList3, "Yusuf", "Sari", "ys@gsgs.com"));
-        userRepository.save(new User("asist", passwordEncoder.encode("asist"),
+        userRepository.save(new User("asis.tant", passwordEncoder.encode("asis"),
                 authorityList4, "Assis", "Tant", "asis@tant.com"));
     }
 

@@ -44,4 +44,19 @@ public class TakingHomework {
         this.studentId = studentId;
         this.homeworkId = homeworkId;
     }
+
+    public String getFileName() {
+        if (file == null) {
+            return null;
+        }
+        return file.getName();
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public void setFile(FileEntity file) {
+        this.file = file;
+    }
 }

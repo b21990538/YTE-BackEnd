@@ -42,7 +42,7 @@ public class Course extends BaseEntity {
     @JoinColumn(name = "lecturer_id", nullable = false)
     private User lecturer;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @LazyCollection(LazyCollectionOption.FALSE) //TODO many to many
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private Set<User> assistants = new HashSet<>();
 

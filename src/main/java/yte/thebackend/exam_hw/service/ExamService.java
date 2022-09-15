@@ -64,4 +64,15 @@ public class ExamService {
         }
         return OptRoom.get();
     }
+
+    public List<Exam> getExams(Long courseId) {
+        //TODO check user is affiliated with course
+
+        return examRepository.findByCourse_Id(courseId);
+    }
+
+    public Exam getExamById(Long examId) {
+        return examRepository.findById(examId)
+                .orElseThrow(() -> new EntityNotFoundException("Exam with ID %d not found".formatted(examId)));
+    }
 }

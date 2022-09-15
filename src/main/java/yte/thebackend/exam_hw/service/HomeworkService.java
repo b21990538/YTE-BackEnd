@@ -2,7 +2,6 @@ package yte.thebackend.exam_hw.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import yte.thebackend.common.entity.FileEntity;
 import yte.thebackend.common.entity.User;
@@ -16,16 +15,16 @@ import yte.thebackend.course.service.MyCoursesService;
 import yte.thebackend.exam_hw.entity.Homework;
 import yte.thebackend.exam_hw.repository.HomeworkRepository;
 import yte.thebackend.student.entity.TakingCourse;
-import yte.thebackend.student.entity.TakingExam;
 import yte.thebackend.student.entity.TakingHomework;
 import yte.thebackend.student.repository.TakingCourseRepository;
 import yte.thebackend.student.repository.TakingHomeworkRepository;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +68,22 @@ public class HomeworkService {
         takingHomeworkRepository.saveAll(takingHomeworks);
 
         return new MessageResponse("Homework added successfully", ResultType.SUCCESS);
+    }
+
+    public FileEntity getHomeworkFile(Long homeworkId) {
+        Homework homework = getHomeworkById(homeworkId);
+        return homework.getFile();
+    }
+
+    public Homework getHomeworkById(Long homeworkId) {
+        return homeworkRepository.findById(homeworkId)
+                .orElseThrow(() -> new EntityNotFoundException("Homework with ID %d not found".formatted(homeworkId)));
+    }
+
+    @Transactional
+    public List<Homework> getHomeworks(Long courseId) {
+        //TODO check user is affiliated with course
+
+        return homeworkRepository.findByCourse_Id(courseId);
     }
 }
