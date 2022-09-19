@@ -6,10 +6,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import yte.thebackend.admin.entity.Admin;
+import yte.thebackend.common.entity.Assistant;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.entity.Authority;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.repository.AuthorityRepository;
+import yte.thebackend.student.entity.Student;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -44,13 +48,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<Authority> authorityList4 = new ArrayList<>();
         authorityList4.add(authorityASSISTANT);
 
-        userRepository.save(new User("21990538", passwordEncoder.encode("user"),
+        userRepository.save(new Student("21990538", passwordEncoder.encode("user"),
                 authorityList1, "User", "Surname", "bla@bla.com" ));
-        userRepository.save(new User("admin", passwordEncoder.encode("admin"),
+        userRepository.save(new Admin("admin", passwordEncoder.encode("admin"),
                 authorityList2, "Adam", "Driver", "adam@glol.com"));
-        userRepository.save(new User("yusuf.sari", passwordEncoder.encode("yusuf"),
+        userRepository.save(new Lecturer("yusuf.sari", passwordEncoder.encode("yusuf"),
                 authorityList3, "Yusuf", "Sari", "ys@gsgs.com"));
-        userRepository.save(new User("asis.tant", passwordEncoder.encode("asis"),
+        userRepository.save(new Assistant("asis.tant", passwordEncoder.encode("asis"),
                 authorityList4, "Assis", "Tant", "asis@tant.com"));
     }
 

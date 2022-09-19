@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yte.thebackend.admin.dto.AddUserResponse;
+import yte.thebackend.admin.entity.Admin;
+import yte.thebackend.common.entity.Assistant;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.entity.Authority;
 import yte.thebackend.admin.dto.AddUserRequest;
 import yte.thebackend.common.enums.AccountTypes;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.repository.AuthorityRepository;
+import yte.thebackend.student.entity.Student;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -41,30 +45,40 @@ public class UserService {
             password.append(c);
         }
 
-        Optional<Authority> OptAuthority = authorityRepository.findByAuthority(addUserRequest.type().name());
-        checkAuthorityExists(addUserRequest, OptAuthority);
-        Authority authority = OptAuthority.get();
+        Authority authority = getAuthorityByName(addUserRequest.type().name());
 
         List<Authority> authorityList = new ArrayList<>();
         authorityList.add(authority);
 
         //TODO same username conflict: append incremented number
-        User savedUser = userRepository.save(new User(username, passwordEncoder.encode(password.toString()),
-                authorityList, prepName(addUserRequest.name()), prepName(addUserRequest.surname()),
-                addUserRequest.email()));
-
-        if (addUserRequest.type() == AccountTypes.STUDENT) {
-            savedUser.assignStudentNo();
-            userRepository.save(savedUser);
-        }
+        User savedUser = switch (addUserRequest.type()) {
+            case STUDENT -> {
+                savedUser = userRepository.save(new Student(username, passwordEncoder.encode(password.toString()),
+                        authorityList, prepName(addUserRequest.name()), prepName(addUserRequest.surname()),
+                        addUserRequest.email()));
+                savedUser.assignStudentNo();
+                yield userRepository.save(savedUser);
+            }
+            case LECTURER -> userRepository.save(new Lecturer(username, passwordEncoder.encode(password.toString()),
+                    authorityList, prepName(addUserRequest.name()), prepName(addUserRequest.surname()),
+                    addUserRequest.email()));
+            case ASSISTANT -> userRepository.save(new Assistant(username, passwordEncoder.encode(password.toString()),
+                    authorityList, prepName(addUserRequest.name()), prepName(addUserRequest.surname()),
+                    addUserRequest.email()));
+            case ADMIN -> userRepository.save(new Admin(username, passwordEncoder.encode(password.toString()),
+                    authorityList, prepName(addUserRequest.name()), prepName(addUserRequest.surname()),
+                    addUserRequest.email()));
+        };
 
         return new AddUserResponse(savedUser.getUsername(), password.toString());
     }
 
-    private static void checkAuthorityExists(AddUserRequest addUserRequest, Optional<Authority> OptAuthority) {
+    private Authority getAuthorityByName(String authorityName) {
+        Optional<Authority> OptAuthority = authorityRepository.findByAuthority(authorityName);
         if (OptAuthority.isEmpty()) {
-            throw new NoSuchElementException("Authority %s not found".formatted(addUserRequest.type().name()));
+            throw new NoSuchElementException("Authority %s not found".formatted(authorityName));
         }
+        return OptAuthority.get();
     }
 
     public static String prepName(String name) {
@@ -73,7 +87,7 @@ public class UserService {
         for (int i = 0, splitNamesLength = splitNames.length; i < splitNamesLength; i++) {
             String splitName = splitNames[i];
             preppedName.append(normalizeAndCapitalize(splitName));
-            if (i != splitNamesLength-1) {
+            if (i != splitNamesLength - 1) {
                 preppedName.append(" ");
             }
         }
@@ -90,7 +104,7 @@ public class UserService {
     }
 
     public static String normalizeAndCapitalize(String str) {
-        if(str == null || str.isEmpty()) {
+        if (str == null || str.isEmpty()) {
             return str;
         }
 
