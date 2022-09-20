@@ -2,6 +2,7 @@ package yte.thebackend.exam_hw.dto;
 
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.FileEntity;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.course.entity.Course;
@@ -29,7 +30,7 @@ public record HomeworkAddRequest(
         Long courseId
 ) {
         public Homework toEntity() {
-                User assistant = new User(assistantUsername);
+                Assistant assistant = new Assistant(assistantUsername);
                 Course course = new Course(courseId);
 
                 return new Homework(info, dueDateTime, assistant, null, course);

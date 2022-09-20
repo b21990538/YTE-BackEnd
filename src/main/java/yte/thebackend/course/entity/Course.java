@@ -4,8 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.BaseEntity;
-import yte.thebackend.common.entity.User;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.course.enums.CourseType;
 
 import javax.persistence.*;
@@ -33,24 +34,25 @@ public class Course extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "time_day"), @JoinColumn(name = "time_slot")})
     private List<TimeSlot> timeSlots = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "room_ID")
     private Room room;
 
     @ManyToOne(cascade = {CascadeType.MERGE,
             CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "lecturer_id", nullable = false)
-    private User lecturer;
+    private Lecturer lecturer;
 
-    @LazyCollection(LazyCollectionOption.FALSE) //TODO many to many
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    private Set<User> assistants = new HashSet<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    private Set<Assistant> assistants = new HashSet<>();
 
-    public void addAssistant(User assistant) {
+
+    public void addAssistant(Assistant assistant) {
         assistants.add(assistant);
     }
 
-    public void setLecturer(User lecturer) {
+    public void setLecturer(Lecturer lecturer) {
         this.lecturer = lecturer;
     }
 
@@ -59,7 +61,7 @@ public class Course extends BaseEntity {
     }
 
     public Course(String name, String description, CourseType type, String code, List<TimeSlot> timeSlots,
-                  Room room, User lecturer) {
+                  Room room, Lecturer lecturer) {
         this.name = name;
         this.description = description;
         this.type = type;
@@ -90,7 +92,7 @@ public class Course extends BaseEntity {
         this.lecturer = newCourse.lecturer;
     }
 
-    public void editLimitedUpdate(Course newCourse) {
+    public void restrictedUpdate(Course newCourse) {
         this.description = newCourse.description;
         this.timeSlots = newCourse.timeSlots;
         this.room = newCourse.room;

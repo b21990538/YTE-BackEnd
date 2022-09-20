@@ -1,5 +1,6 @@
 package yte.thebackend.course.dto;
 
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.entity.Room;
@@ -46,7 +47,7 @@ public record CourseAddRequest(
                 code,
                 timeSlotList,
                 new Room(room),
-                new User(lectUsername)
+                new Lecturer(lectUsername)
         );
     }
 }

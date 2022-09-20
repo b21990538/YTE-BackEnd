@@ -3,9 +3,13 @@ package yte.thebackend.common.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.Authority;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
+import yte.thebackend.common.repository.AssistantRepository;
 import yte.thebackend.common.repository.AuthorityRepository;
+import yte.thebackend.common.repository.LecturerRepository;
 import yte.thebackend.common.repository.UserRepository;
 
 import java.util.List;
@@ -14,19 +18,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AutocompleteService {
 
-    private final UserRepository userRepository;
-    private final AuthorityRepository authorityRepository;
+    private final LecturerRepository lecturerRepository;
+    private final AssistantRepository assistantRepository;
 
-    public List<User> getLecturersByUsernameLike(String like) {
-        Authority authorityLECTURER = authorityRepository.findByAuthority("LECTURER").get();
-
-        return userRepository.findByUsernameContainingIgnoreCaseAndAuthoritiesContaining(like, authorityLECTURER,
-                PageRequest.of(0, 10));
+    public List<Lecturer> getLecturersByUsernameLike(String like) {
+        return lecturerRepository.findByUsernameContainingIgnoreCase(like, PageRequest.of(0, 10));
     }
 
-    public List<User> getAssistantsByUsernameLike(String like) {
-        Authority authority = authorityRepository.findByAuthority("ASSISTANT").get();
-        return userRepository.findByUsernameContainingIgnoreCaseAndAuthoritiesContaining(like, authority,
-                PageRequest.of(0, 10));
+    public List<Assistant> getAssistantsByUsernameLike(String like) {
+        return assistantRepository.findByUsernameContainingIgnoreCase(like, PageRequest.of(0, 10));
     }
 }

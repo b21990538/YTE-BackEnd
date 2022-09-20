@@ -6,7 +6,10 @@ import yte.thebackend.common.entity.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,6 +23,9 @@ public class Room extends BaseEntity {
     private Boolean hasAirCond;
     private Boolean hasWindow;
     private Long capacity;
+
+    @OneToMany(mappedBy = "room")
+    private Set<Course> courses = new HashSet<>();
 
     public Room(String name) {
         this.name = name;

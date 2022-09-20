@@ -3,18 +3,21 @@ package yte.thebackend.course.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yte.thebackend.common.entity.Assistant;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.enums.AccountTypes;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
+import yte.thebackend.common.service.AssistantService;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.repository.CourseRepository;
 import yte.thebackend.student.entity.TakingCourse;
 import yte.thebackend.student.repository.TakingCourseRepository;
 
-import java.util.ArrayList;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,45 +28,32 @@ public class MyCoursesService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final CourseService courseService;
+    private final AssistantService assistantService;
+    private final RoomService roomService;
     private final TakingCourseRepository takingCourseRepository;
 
-    public List<Course> getMyCourses(User user) {
-        String role = user.getFirstAuthority();
-
-        if (role.equals(AccountTypes.LECTURER.name())) {
-            return getLecturerCourses(user.getId());
-        }
-        if (role.equals(AccountTypes.ASSISTANT.name())) {
-            return getAssistantCourses(user);
-        }
-
-        return getStudentCourses(user.getId());
-    }
-
-    private List<Course> getStudentCourses(Long studentUserId) {
+    public List<Course> getStudentCourses(Long studentUserId) {
 
         return takingCourseRepository.findByStudent_Id(studentUserId).stream()
                 .map(TakingCourse::getCourse)
                 .toList();
     }
 
-    private List<Course> getAssistantCourses(User assistant) {
+    public List<Course> getAssistantCourses(Assistant assistant) {
         return courseRepository.findByAssistantsIsContaining(assistant);
     }
 
-    private List<Course> getLecturerCourses(Long lecturerId) {
+    public List<Course> getLecturerCourses(Long lecturerId) {
         return courseRepository.findByLecturer_Id(lecturerId);
     }
-    //TODO remove assistant? Transactional?
-    public MessageResponse assignAssistant(User lecturer, Long courseId, String assistantUsername) {
-        Optional<User> OptAssistant = userRepository.findByUsername(assistantUsername);
-        CourseService.checkUserWithUsernameExists(assistantUsername, OptAssistant);
+    // TODO remove assistant?
+    @Transactional
+    public MessageResponse assignAssistant(Lecturer lecturer, Long courseId, String assistantUsername) {
 
         Course course = courseService.getCourseById(courseId);
-        User assistant = OptAssistant.get();
+        Assistant assistant = assistantService.getAssistantByUsername(assistantUsername);
 
-        checkUserIsLecturerOfCourse(lecturer, courseId, course);
-        checkUserIsAssistant(assistantUsername, assistant);
+        checkLecturerGivesCourse(lecturer, course);
 
         course.addAssistant(assistant);
 
@@ -72,38 +62,41 @@ public class MyCoursesService {
         return new MessageResponse("Assistant added", ResultType.SUCCESS);
     }
 
-    public MessageResponse updateCourse(User user, Long courseId, Course newCourse) {
-        Course oldCourse = courseService.getCourseById(courseId);
-        oldCourse.editLimitedUpdate(newCourse);
+    public MessageResponse lecturerUpdateCourse(Lecturer lecturer, Long courseId, Course newCourse) {
+        Course course = courseService.getCourseById(courseId);
+        course.restrictedUpdate(newCourse);
 
-        checkUserIsGivingCourse(user, courseId, oldCourse);
+        checkLecturerGivesCourse(lecturer, course);
 
-        Room room = courseService.getRoomFromCourse(oldCourse);
-        oldCourse.setRoom(room);
+        Room room = roomService.getRoomFromCourse(course);
+        course.setRoom(room);
 
-        courseRepository.save(oldCourse);
+        courseRepository.save(course);
         return new MessageResponse("Course with id %d has been updated".formatted(courseId), ResultType.SUCCESS);
     }
 
-    public static void checkUserIsAssistant(String assistantUsername, User assistant) {
-        if (!assistant.getFirstAuthority().equals(AccountTypes.ASSISTANT.name())) {
-            throw new RuntimeException("User %s is not an assistant".formatted(assistantUsername));
+    public MessageResponse assistantUpdateCourse(Assistant assistant, Long courseId, Course newCourse) {
+        Course course = courseService.getCourseById(courseId);
+        course.restrictedUpdate(newCourse);
+
+        checkAssistantAssignedToCourse(assistant, course);
+
+        Room room = roomService.getRoomFromCourse(course);
+        course.setRoom(room);
+
+        courseRepository.save(course);
+        return new MessageResponse("Course with id %d has been updated".formatted(courseId), ResultType.SUCCESS);
+    }
+
+    public static void checkAssistantAssignedToCourse(Assistant assistant, Course course) {
+        if (!course.getAssistants().contains(assistant)) {
+            throw new RuntimeException("You are not an assistant of the course with id %d".formatted(course.getId()));
         }
     }
 
-    public static void checkUserIsGivingCourse(User user, Long courseId, Course course) {
-        if (user.getFirstAuthority().equals(AccountTypes.LECTURER.name())) {
-            checkUserIsLecturerOfCourse(user, courseId, course);
-        } else {
-            if (!course.getAssistants().contains(user)) {
-                throw new RuntimeException("You are not an assistant of the course with id %d".formatted(courseId));
-            }
-        }
-    }
-
-    public static void checkUserIsLecturerOfCourse(User user, Long courseId, Course course) {
-        if (!course.getLecturer().equals(user)) {
-            throw new RuntimeException("You are not the lecturer of the course with id %d".formatted(courseId));
+    public static void checkLecturerGivesCourse(Lecturer lecturer, Course course) {
+        if (!course.getLecturer().equals(lecturer)) {
+            throw new RuntimeException("You are not the lecturer of the course with id %d".formatted(course.getId()));
         }
     }
 }

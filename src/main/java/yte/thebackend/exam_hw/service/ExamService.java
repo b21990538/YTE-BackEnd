@@ -2,6 +2,8 @@ package yte.thebackend.exam_hw.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yte.thebackend.common.entity.Assistant;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
@@ -10,6 +12,7 @@ import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.repository.RoomRepository;
 import yte.thebackend.course.service.CourseService;
 import yte.thebackend.course.service.MyCoursesService;
+import yte.thebackend.course.service.RoomService;
 import yte.thebackend.exam_hw.entity.Exam;
 import yte.thebackend.exam_hw.repository.ExamRepository;
 import yte.thebackend.student.entity.TakingCourse;
@@ -28,20 +31,38 @@ import java.util.Optional;
 public class ExamService {
 
     private final ExamRepository examRepository;
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
     private final TakingCourseRepository takingCourseRepository;
     private final TakingExamRepository takingExamRepository;
     private final CourseService courseService;
 
     @Transactional
-    public MessageResponse addExam(Exam exam, User user) {
-        Room room = getRoomByName(exam.getRoom().getName());
-        exam.setRoom(room);
-
+    public MessageResponse addExam(Exam exam, Lecturer lecturer) {
         Course course = courseService.getCourseById(exam.getCourse().getId());
         exam.setCourse(course);
 
-        MyCoursesService.checkUserIsGivingCourse(user, course.getId(), course);
+        MyCoursesService.checkLecturerGivesCourse(lecturer, course);
+
+        prepAndAddExam(exam, course);
+
+        return new MessageResponse("Exam added successfully.", ResultType.SUCCESS);
+    }
+
+    @Transactional
+    public MessageResponse addExam(Exam exam, Assistant assistant) {
+        Course course = courseService.getCourseById(exam.getCourse().getId());
+        exam.setCourse(course);
+
+        MyCoursesService.checkAssistantAssignedToCourse(assistant, course);
+
+        prepAndAddExam(exam, course);
+
+        return new MessageResponse("Exam added successfully.", ResultType.SUCCESS);
+    }
+
+    private void prepAndAddExam(Exam exam, Course course) {
+        Room room = roomService.getRoomByName(exam.getRoom().getName());
+        exam.setRoom(room);
 
         Exam savedExam = examRepository.save(exam);
 
@@ -52,17 +73,6 @@ public class ExamService {
             takingExams.add(new TakingExam(takingCourse.getStudentId(), savedExam.getId()));
         }
         takingExamRepository.saveAll(takingExams);
-
-        return new MessageResponse("Exam added successfully.", ResultType.SUCCESS);
-    }
-
-    public Room getRoomByName(String name) {
-        Optional<Room> OptRoom = roomRepository.findByName(name);
-
-        if (OptRoom.isEmpty()) {
-            throw new EntityNotFoundException("Room with name %s not found".formatted(name));
-        }
-        return OptRoom.get();
     }
 
     public List<Exam> getExams(Long courseId) {

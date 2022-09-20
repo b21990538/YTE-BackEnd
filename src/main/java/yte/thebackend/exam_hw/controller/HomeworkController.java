@@ -7,7 +7,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.FileEntity;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.service.FileService;
@@ -28,15 +30,17 @@ import java.util.List;
 public class HomeworkController {
 
     private final HomeworkService homeworkService;
-    private final FileService fileService;
 
     @PreAuthorize("hasAnyAuthority('LECTURER', 'ASSISTANT')")
     @PostMapping(consumes = "multipart/form-data")
     public MessageResponse addHomework(@RequestPart("homework") @Valid HomeworkAddRequest homeworkAddRequest,
                                        @RequestPart("file") @Valid @NotNull MultipartFile multipartFile,
                                        Authentication authentication) {
-        return homeworkService.addHomework(homeworkAddRequest.toEntity(), multipartFile,
-                (User) authentication.getPrincipal());
+        User user = (User) authentication.getPrincipal();
+        if (user instanceof Lecturer) {
+            return homeworkService.addHomework(homeworkAddRequest.toEntity(), multipartFile, (Lecturer) user);
+        }
+        return homeworkService.addHomework(homeworkAddRequest.toEntity(), multipartFile, (Assistant) user);
     }
 
     @PreAuthorize("hasAnyAuthority('LECTURER', 'ASSISTANT')")

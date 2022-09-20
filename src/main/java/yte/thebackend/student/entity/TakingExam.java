@@ -27,7 +27,7 @@ public class TakingExam {
     @ManyToOne
     @MapsId("studentId")
     @JoinColumn(name = "student_id")
-    private User student;
+    private Student student;
 
     @ManyToOne
     @MapsId("examId")

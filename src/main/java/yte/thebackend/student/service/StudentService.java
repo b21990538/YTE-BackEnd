@@ -3,15 +3,21 @@ package yte.thebackend.student.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.FileEntity;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
 import yte.thebackend.common.service.FileService;
+import yte.thebackend.course.service.MyCoursesService;
 import yte.thebackend.exam_hw.entity.Exam;
 import yte.thebackend.exam_hw.entity.Homework;
 import yte.thebackend.exam_hw.repository.ExamRepository;
 import yte.thebackend.exam_hw.repository.HomeworkRepository;
+import yte.thebackend.exam_hw.service.ExamService;
+import yte.thebackend.exam_hw.service.HomeworkService;
+import yte.thebackend.student.entity.Student;
 import yte.thebackend.student.entity.TakingCourse;
 import yte.thebackend.student.entity.TakingExam;
 import yte.thebackend.student.entity.TakingHomework;
@@ -35,9 +41,11 @@ public class StudentService {
     private final ExamRepository examRepository;
     private final HomeworkRepository homeworkRepository;
     private final FileService fileService;
+    private final ExamService examService;
+    private final HomeworkService homeworkService;
 
     @Transactional
-    public MessageResponse takeCourse(User student, Long courseId) {
+    public MessageResponse takeCourse(Student student, Long courseId) {
         TakingCourse takingCourse = new TakingCourse(student.getId(), courseId);
 
         takingCourseRepository.save(takingCourse);
@@ -59,22 +67,40 @@ public class StudentService {
         return new MessageResponse("Successfully joined course.", ResultType.SUCCESS);
     }
 
-    public List<TakingExam> getExamGrades(User user, Long examId) {
-        //TODO check user is giving course
+    public List<TakingExam> getExamGrades(Lecturer lecturer, Long examId) {
+        Exam exam = examService.getExamById(examId);
+        MyCoursesService.checkLecturerGivesCourse(lecturer, exam.getCourse());
+
+        return takingExamRepository.findByExam_Id(examId);
+    }
+
+    public List<TakingExam> getExamGrades(Assistant assistant, Long examId) {
+        Exam exam = examService.getExamById(examId);
+        MyCoursesService.checkAssistantAssignedToCourse(assistant, exam.getCourse());
 
         return takingExamRepository.findByExam_Id(examId);
     }
 
     @Transactional
-    public List<TakingHomework> getHomeworkGrades(User user, Long homeworkId) {
-        //TODO check user is giving course
+    public List<TakingHomework> getHomeworkGrades(Lecturer lecturer, Long homeworkId) {
+        Homework homework = homeworkService.getHomeworkById(homeworkId);
+        MyCoursesService.checkLecturerGivesCourse(lecturer, homework.getCourse());
 
         return takingHomeworkRepository.findByHomework_Id(homeworkId);
     }
 
     @Transactional
-    public MessageResponse updateExamGrade(User user, Long examId, Long studentId, Integer score) {
-        //TODO check user is giving course
+    public List<TakingHomework> getHomeworkGrades(Assistant assistant, Long homeworkId) {
+        Homework homework = homeworkService.getHomeworkById(homeworkId);
+        MyCoursesService.checkAssistantAssignedToCourse(assistant, homework.getCourse());
+
+        return takingHomeworkRepository.findByHomework_Id(homeworkId);
+    }
+
+    @Transactional
+    public MessageResponse updateExamGrade(Lecturer lecturer, Long examId, Long studentId, Integer score) {
+        Exam exam = examService.getExamById(examId);
+        MyCoursesService.checkLecturerGivesCourse(lecturer, exam.getCourse());
 
         TakingExam takingExam = getTakingExamByIds(studentId, examId);
         takingExam.setScore(score);
@@ -84,8 +110,33 @@ public class StudentService {
     }
 
     @Transactional
-    public MessageResponse updateHomeworkGrade(User user, Long homeworkId, Long studentId, Integer score) {
-        //TODO check user is giving course
+    public MessageResponse updateExamGrade(Assistant assistant, Long examId, Long studentId, Integer score) {
+        Exam exam = examService.getExamById(examId);
+        MyCoursesService.checkAssistantAssignedToCourse(assistant, exam.getCourse());
+
+        TakingExam takingExam = getTakingExamByIds(studentId, examId);
+        takingExam.setScore(score);
+        takingExamRepository.save(takingExam);
+
+        return new MessageResponse("Score set.", ResultType.SUCCESS);
+    }
+
+    @Transactional
+    public MessageResponse updateHomeworkGrade(Lecturer lecturer, Long homeworkId, Long studentId, Integer score) {
+        Homework homework = homeworkService.getHomeworkById(homeworkId);
+        MyCoursesService.checkLecturerGivesCourse(lecturer, homework.getCourse());
+
+        TakingHomework takingHomework = getTakingHomeworkByIds(studentId, homeworkId);
+        takingHomework.setScore(score);
+        takingHomeworkRepository.save(takingHomework);
+
+        return new MessageResponse("Score set.", ResultType.SUCCESS);
+    }
+
+    @Transactional
+    public MessageResponse updateHomeworkGrade(Assistant assistant, Long homeworkId, Long studentId, Integer score) {
+        Homework homework = homeworkService.getHomeworkById(homeworkId);
+        MyCoursesService.checkAssistantAssignedToCourse(assistant, homework.getCourse());
 
         TakingHomework takingHomework = getTakingHomeworkByIds(studentId, homeworkId);
         takingHomework.setScore(score);
@@ -105,7 +156,7 @@ public class StudentService {
     }
 
     @Transactional
-    public MessageResponse addFileToHomework(MultipartFile file, User student, Long homeworkId) {
+    public MessageResponse addFileToHomework(MultipartFile file, Student student, Long homeworkId) {
         TakingHomework takingHomework = getTakingHomeworkByIds(student.getId(), homeworkId);
         FileEntity fileEntity = fileService.saveFile(file);
         takingHomework.setFile(fileEntity);

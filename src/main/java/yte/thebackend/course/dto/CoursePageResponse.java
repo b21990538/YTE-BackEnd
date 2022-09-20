@@ -1,5 +1,6 @@
 package yte.thebackend.course.dto;
 
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.course.entity.Course;
 
@@ -20,10 +21,10 @@ public record CoursePageResponse(
 ) {
     public static CoursePageResponse fromEntity(Course course) {
 
-        Set<User> assistants = course.getAssistants();
+        Set<Assistant> assistants = course.getAssistants();
         List<NameSurname> assistantNameSurnames = new ArrayList<>();
 
-        for (User assistant : assistants) {
+        for (Assistant assistant : assistants) {
             assistantNameSurnames.add(new NameSurname(
                     assistant.getName(),
                     assistant.getSurname(),

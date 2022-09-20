@@ -3,11 +3,14 @@ package yte.thebackend.exam_hw.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.FileEntity;
+import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
+import yte.thebackend.common.service.AssistantService;
 import yte.thebackend.common.service.FileService;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.service.CourseService;
@@ -31,25 +34,37 @@ import java.util.stream.Stream;
 public class HomeworkService {
 
     private final HomeworkRepository homeworkRepository;
-    private final UserRepository userRepository;
+    private final AssistantService assistantService;
     private final TakingCourseRepository takingCourseRepository;
     private final TakingHomeworkRepository takingHomeworkRepository;
     private final CourseService courseService;
     private final FileService fileService;
 
     @Transactional
-    public MessageResponse addHomework(Homework homework, MultipartFile multipartFile, User user) {
-
-        //TODO findByUsername in UserService
-        Optional<User> OptAssistant = userRepository.findByUsername(homework.getAssistant().getUsername());
-        CourseService.checkUserWithUsernameExists(homework.getAssistant().getUsername(), OptAssistant);
-        User assistant = OptAssistant.get();
-
+    public MessageResponse addHomework(Homework homework, MultipartFile multipartFile, Lecturer lecturer) {
         Course course = courseService.getCourseById(homework.getCourse().getId());
 
-        MyCoursesService.checkUserIsAssistant(assistant.getUsername(), assistant);
-        MyCoursesService.checkUserIsGivingCourse(assistant, course.getId(), course);// check assistant assigned to hw
-        MyCoursesService.checkUserIsGivingCourse(user, course.getId(), course); // check person adding the homework
+        MyCoursesService.checkLecturerGivesCourse(lecturer, course);
+
+        prepAndAddHomework(homework, multipartFile, course);
+
+        return new MessageResponse("Homework added successfully", ResultType.SUCCESS);
+    }
+
+    @Transactional
+    public MessageResponse addHomework(Homework homework, MultipartFile multipartFile, Assistant creatorAssistant) {
+        Course course = courseService.getCourseById(homework.getCourse().getId());
+
+        MyCoursesService.checkAssistantAssignedToCourse(creatorAssistant, course);
+
+        prepAndAddHomework(homework, multipartFile, course);
+
+        return new MessageResponse("Homework added successfully", ResultType.SUCCESS);
+    }
+
+    private void prepAndAddHomework(Homework homework, MultipartFile multipartFile, Course course) {
+        Assistant assistant = assistantService.getAssistantByUsername(homework.getAssistant().getUsername());
+        MyCoursesService.checkAssistantAssignedToCourse(assistant, course);
 
         FileEntity fileEntity = fileService.saveFile(multipartFile);
 
@@ -66,8 +81,6 @@ public class HomeworkService {
             takingHomeworks.add(new TakingHomework(takingCourse.getStudentId(), savedHomework.getId()));
         }
         takingHomeworkRepository.saveAll(takingHomeworks);
-
-        return new MessageResponse("Homework added successfully", ResultType.SUCCESS);
     }
 
     public FileEntity getHomeworkFile(Long homeworkId) {

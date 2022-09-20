@@ -2,6 +2,7 @@ package yte.thebackend.exam_hw.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.BaseEntity;
 import yte.thebackend.common.entity.FileEntity;
 import yte.thebackend.common.entity.User;
@@ -21,9 +22,9 @@ public class Homework extends BaseEntity {
 
     private LocalDateTime dueDateTime;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "assistant_ID")
-    private User assistant;
+    private Assistant assistant;
 
     @OneToOne
     @JoinColumn(name = "file_ID")
@@ -33,7 +34,7 @@ public class Homework extends BaseEntity {
     @JoinColumn(name = "course_ID")
     private Course course;
 
-    public Homework(String info, LocalDateTime dueDateTime, User assistant,
+    public Homework(String info, LocalDateTime dueDateTime, Assistant assistant,
                     FileEntity file, Course course) {
         this.info = info;
         this.dueDateTime = dueDateTime;
@@ -42,7 +43,7 @@ public class Homework extends BaseEntity {
         this.course = course;
     }
 
-    public void setAssistant(User assistant) {
+    public void setAssistant(Assistant assistant) {
         this.assistant = assistant;
     }
 
