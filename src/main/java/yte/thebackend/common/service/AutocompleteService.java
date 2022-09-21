@@ -4,13 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.Assistant;
-import yte.thebackend.common.entity.Authority;
 import yte.thebackend.common.entity.Lecturer;
-import yte.thebackend.common.entity.User;
 import yte.thebackend.common.repository.AssistantRepository;
-import yte.thebackend.common.repository.AuthorityRepository;
 import yte.thebackend.common.repository.LecturerRepository;
-import yte.thebackend.common.repository.UserRepository;
 
 import java.util.List;
 

@@ -18,7 +18,7 @@ public class FileService {
 
     public FileEntity saveFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        FileEntity fileEntity = null;
+        FileEntity fileEntity;
         try {
             fileEntity = new FileEntity(fileName, file.getContentType(), file.getBytes());
         } catch (IOException e) {

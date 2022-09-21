@@ -8,7 +8,6 @@ import yte.thebackend.exam_hw.entity.Homework;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

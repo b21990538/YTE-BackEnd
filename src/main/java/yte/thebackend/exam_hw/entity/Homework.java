@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.BaseEntity;
 import yte.thebackend.common.entity.FileEntity;
-import yte.thebackend.common.entity.User;
 import yte.thebackend.course.entity.Course;
 
 import javax.persistence.*;

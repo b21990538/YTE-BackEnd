@@ -3,20 +3,15 @@ package yte.thebackend.course.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.Lecturer;
-import yte.thebackend.common.entity.User;
-import yte.thebackend.common.repository.LecturerRepository;
-import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
 import yte.thebackend.common.service.LecturerService;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.repository.CourseRepository;
-import yte.thebackend.course.repository.RoomRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

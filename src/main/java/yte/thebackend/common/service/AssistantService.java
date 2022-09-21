@@ -3,7 +3,6 @@ package yte.thebackend.common.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.Assistant;
-import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.repository.AssistantRepository;
 
 import javax.persistence.EntityNotFoundException;

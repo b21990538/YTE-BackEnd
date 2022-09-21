@@ -6,8 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.FileEntity;
 import yte.thebackend.common.entity.Lecturer;
-import yte.thebackend.common.entity.User;
-import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
 import yte.thebackend.common.service.AssistantService;
@@ -26,8 +24,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor

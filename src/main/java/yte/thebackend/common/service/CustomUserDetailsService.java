@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import yte.thebackend.admin.entity.Admin;
 import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.Lecturer;
-import yte.thebackend.common.entity.User;
 import yte.thebackend.common.entity.Authority;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.repository.AuthorityRepository;

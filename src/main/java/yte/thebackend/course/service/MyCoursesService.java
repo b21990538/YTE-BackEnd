@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.Lecturer;
-import yte.thebackend.common.entity.User;
-import yte.thebackend.common.enums.AccountTypes;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
@@ -19,7 +17,6 @@ import yte.thebackend.student.repository.TakingCourseRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

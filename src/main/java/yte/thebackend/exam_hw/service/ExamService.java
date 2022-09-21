@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.Lecturer;
-import yte.thebackend.common.entity.User;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.entity.Room;
-import yte.thebackend.course.repository.RoomRepository;
 import yte.thebackend.course.service.CourseService;
 import yte.thebackend.course.service.MyCoursesService;
 import yte.thebackend.course.service.RoomService;
@@ -24,7 +22,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

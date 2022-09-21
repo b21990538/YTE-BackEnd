@@ -1,7 +1,6 @@
 package yte.thebackend.course.dto;
 
 import yte.thebackend.common.entity.Assistant;
-import yte.thebackend.common.entity.User;
 import yte.thebackend.course.entity.Course;
 
 import java.util.ArrayList;

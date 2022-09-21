@@ -10,7 +10,6 @@ import yte.thebackend.common.entity.User;
 import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.exam_hw.dto.ExamAddRequest;
 import yte.thebackend.exam_hw.dto.ExamResponse;
-import yte.thebackend.exam_hw.dto.HomeworkResponse;
 import yte.thebackend.exam_hw.service.ExamService;
 
 import javax.validation.Valid;

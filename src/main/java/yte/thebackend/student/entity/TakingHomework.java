@@ -3,8 +3,6 @@ package yte.thebackend.student.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yte.thebackend.common.entity.FileEntity;
-import yte.thebackend.common.entity.User;
-import yte.thebackend.course.entity.Course;
 import yte.thebackend.exam_hw.entity.Homework;
 import yte.thebackend.student.composite_key.TakingHomeworkKey;
 

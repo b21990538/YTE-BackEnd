@@ -1,10 +1,6 @@
 package yte.thebackend.exam_hw.dto;
 
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import yte.thebackend.common.entity.Assistant;
-import yte.thebackend.common.entity.FileEntity;
-import yte.thebackend.common.entity.User;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.exam_hw.entity.Homework;
 
@@ -12,7 +8,6 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 public record HomeworkAddRequest(

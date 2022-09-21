@@ -1,6 +1,5 @@
 package yte.thebackend.course.dto;
 
-import yte.thebackend.common.entity.User;
 import yte.thebackend.course.entity.Course;
 import yte.thebackend.course.entity.Room;
 import yte.thebackend.course.entity.TimeSlot;

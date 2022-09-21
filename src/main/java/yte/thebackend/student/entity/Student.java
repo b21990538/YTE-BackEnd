@@ -7,7 +7,6 @@ import yte.thebackend.common.entity.User;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.util.List;
 import java.util.Set;
 

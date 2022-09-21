@@ -2,19 +2,14 @@ package yte.thebackend.student.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import yte.thebackend.common.entity.Assistant;
-import yte.thebackend.common.entity.FileEntity;
 import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.common.entity.User;
 import yte.thebackend.common.response.MessageResponse;
-import yte.thebackend.exam_hw.dto.HomeworkAddRequest;
 import yte.thebackend.student.dto.ExamGradeResponse;
 import yte.thebackend.student.dto.HomeworkGradeResponse;
 import yte.thebackend.student.entity.Student;

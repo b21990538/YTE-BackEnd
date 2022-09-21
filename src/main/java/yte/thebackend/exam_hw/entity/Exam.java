@@ -1,6 +1,5 @@
 package yte.thebackend.exam_hw.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yte.thebackend.common.entity.BaseEntity;

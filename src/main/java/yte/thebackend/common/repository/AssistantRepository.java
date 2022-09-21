@@ -3,7 +3,6 @@ package yte.thebackend.common.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import yte.thebackend.common.entity.Assistant;
-import yte.thebackend.common.entity.Lecturer;
 
 import java.util.List;
 import java.util.Optional;
