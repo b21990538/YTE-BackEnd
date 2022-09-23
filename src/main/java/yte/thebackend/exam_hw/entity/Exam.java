@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yte.thebackend.common.entity.BaseEntity;
 import yte.thebackend.course.entity.Course;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

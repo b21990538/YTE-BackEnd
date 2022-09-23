@@ -10,8 +10,9 @@ import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
 import yte.thebackend.common.service.AssistantService;
 import yte.thebackend.course.entity.Course;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 import yte.thebackend.course.repository.CourseRepository;
+import yte.thebackend.room.service.RoomService;
 import yte.thebackend.student.entity.TakingCourse;
 import yte.thebackend.student.repository.TakingCourseRepository;
 

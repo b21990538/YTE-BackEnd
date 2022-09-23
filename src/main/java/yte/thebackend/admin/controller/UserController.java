@@ -16,6 +16,7 @@ import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -37,6 +38,12 @@ public class UserController {
         return userService.getAllUsers().stream()
                 .map(UserResponse::fromEntity)
                 .toList();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/pacify-user/{userId}")
+    public MessageResponse togglePacify(@PathVariable @NotNull Long userId) {
+        return userService.togglePacify(userId);
     }
 
     @ExceptionHandler(value = {DataIntegrityViolationException.class, NoSuchElementException.class})

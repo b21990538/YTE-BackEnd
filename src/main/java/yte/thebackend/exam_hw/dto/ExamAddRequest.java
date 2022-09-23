@@ -1,7 +1,7 @@
 package yte.thebackend.exam_hw.dto;
 
 import yte.thebackend.course.entity.Course;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 import yte.thebackend.exam_hw.entity.Exam;
 
 import javax.validation.constraints.FutureOrPresent;

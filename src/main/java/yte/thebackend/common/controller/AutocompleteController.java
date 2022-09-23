@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import yte.thebackend.common.dto.AutocompleteItem;
 import yte.thebackend.common.service.AutocompleteService;
-import yte.thebackend.course.service.RoomService;
+import yte.thebackend.room.service.RoomService;
 
 import java.util.List;
 

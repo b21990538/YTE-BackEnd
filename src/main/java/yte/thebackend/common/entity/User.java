@@ -83,4 +83,9 @@ public class User extends BaseEntity implements UserDetails {
         }
         return authorities.get(0).getAuthority();
     }
+
+    public Boolean togglePacify() {
+        isEnabled = !isEnabled;
+        return isEnabled;
+    }
 }

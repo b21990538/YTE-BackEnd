@@ -8,6 +8,7 @@ import yte.thebackend.common.entity.Assistant;
 import yte.thebackend.common.entity.BaseEntity;
 import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.course.enums.CourseType;
+import yte.thebackend.room.entity.Room;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -33,7 +33,6 @@ public class CourseController {
                 .toList();
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STUDENT', 'LECTURER', 'ASSISTANT')")
     @GetMapping("/{id}")
     public CourseResponse getCourse(@PathVariable Long id) {
         return CourseResponse.fromEntity(courseService.getCourseById(id));

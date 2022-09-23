@@ -1,7 +1,7 @@
 package yte.thebackend.common.dto;
 
 import yte.thebackend.common.entity.User;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 
 public record AutocompleteItem(
         String label

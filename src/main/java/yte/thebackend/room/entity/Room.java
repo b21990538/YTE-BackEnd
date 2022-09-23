@@ -1,8 +1,9 @@
-package yte.thebackend.course.entity;
+package yte.thebackend.room.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import yte.thebackend.common.entity.BaseEntity;
+import yte.thebackend.course.entity.Course;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,5 +35,23 @@ public class Room extends BaseEntity {
         this.hasAirCond = false;
         this.hasWindow = false;
         this.capacity = 50L;
+    }
+
+    public Room(String name, Long capacity, Boolean hasProjection, Boolean hasComputer, Boolean hasAirCond, Boolean hasWindow) {
+        this.name = name;
+        this.hasProjection = hasProjection;
+        this.hasComputer = hasComputer;
+        this.hasAirCond = hasAirCond;
+        this.hasWindow = hasWindow;
+        this.capacity = capacity;
+    }
+
+    public void update(Room newRoom) {
+        this.name = newRoom.name;
+        this.hasProjection = newRoom.hasProjection;
+        this.hasComputer = newRoom.hasComputer;
+        this.hasAirCond = newRoom.hasAirCond;
+        this.hasWindow = newRoom.hasWindow;
+        this.capacity = newRoom.capacity;
     }
 }

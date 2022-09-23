@@ -2,7 +2,7 @@ package yte.thebackend.course.dto;
 
 import yte.thebackend.common.entity.Lecturer;
 import yte.thebackend.course.entity.Course;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 import yte.thebackend.course.entity.TimeSlot;
 import yte.thebackend.course.enums.CourseType;
 

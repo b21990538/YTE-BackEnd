@@ -1,6 +1,7 @@
 package yte.thebackend.admin.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yte.thebackend.admin.dto.AddUserResponse;
@@ -13,6 +14,8 @@ import yte.thebackend.admin.dto.AddUserRequest;
 import yte.thebackend.common.enums.AccountTypes;
 import yte.thebackend.common.repository.UserRepository;
 import yte.thebackend.common.repository.AuthorityRepository;
+import yte.thebackend.common.response.MessageResponse;
+import yte.thebackend.common.response.ResultType;
 import yte.thebackend.student.entity.Student;
 
 import javax.transaction.Transactional;
@@ -109,5 +112,24 @@ public class UserService {
         }
 
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase(Locale.ROOT);
+    }
+
+    @Transactional
+    public MessageResponse togglePacify(Long userId) {
+
+        User user = getUserById(userId);
+        Boolean userIsActive = user.togglePacify();
+        userRepository.save(user);
+
+        if (userIsActive) {
+            return new MessageResponse("User activated", ResultType.SUCCESS);
+        }
+
+        return new MessageResponse("User pacified", ResultType.SUCCESS);
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User with id %d is not present".formatted(userId)));
     }
 }

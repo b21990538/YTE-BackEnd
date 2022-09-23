@@ -7,8 +7,9 @@ import yte.thebackend.common.response.MessageResponse;
 import yte.thebackend.common.response.ResultType;
 import yte.thebackend.common.service.LecturerService;
 import yte.thebackend.course.entity.Course;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 import yte.thebackend.course.repository.CourseRepository;
+import yte.thebackend.room.service.RoomService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -33,7 +34,7 @@ public class CourseService {
 
     public MessageResponse deleteCourse(Long id) {
         courseRepository.deleteById(id);
-        //TODO handle cascade
+        // TODO handle cascade
         return new MessageResponse("Course with id %d deleted".formatted(id), ResultType.SUCCESS);
     }
 

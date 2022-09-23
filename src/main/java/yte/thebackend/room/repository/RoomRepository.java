@@ -1,8 +1,8 @@
-package yte.thebackend.course.repository;
+package yte.thebackend.room.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 
 import java.util.List;
 import java.util.Optional;

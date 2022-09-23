@@ -1,7 +1,7 @@
 package yte.thebackend.course.dto;
 
 import yte.thebackend.course.entity.Course;
-import yte.thebackend.course.entity.Room;
+import yte.thebackend.room.entity.Room;
 import yte.thebackend.course.entity.TimeSlot;
 
 import javax.validation.constraints.NotBlank;
