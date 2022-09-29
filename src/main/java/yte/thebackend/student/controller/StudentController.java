@@ -74,6 +74,16 @@ public class StudentController {
                 .toList();
     }
 
+    @GetMapping("/exam-grade/grade-data/{examId}")
+    public List<Integer> getExamGradeData(@PathVariable @NotNull Long examId) {
+        return studentService.getExamGradeData(examId);
+    }
+
+    @GetMapping("/hw-grade/grade-data/{homeworkId}")
+    public List<Integer> getHomeworkGradeData(@PathVariable @NotNull Long homeworkId) {
+        return studentService.getHomeworkGradeData(homeworkId);
+    }
+
     @PreAuthorize("hasAnyAuthority('LECTURER', 'ASSISTANT')")
     @PutMapping("/exam-grade/{examId}/{studentId}/{score}")
     public MessageResponse updateExamGrade(Authentication authentication, @PathVariable @NotNull Long examId,

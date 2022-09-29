@@ -179,4 +179,17 @@ public class StudentService {
     public Integer getExamScoreByIds(Long studentId, Long examId) {
         return getTakingExamByIds(studentId, examId).getScore();
     }
+
+    public List<Integer> getExamGradeData(Long examId) {
+        return takingExamRepository.findByExam_Id(examId).stream()
+                .map(TakingExam::getScore)
+                .toList();
+    }
+
+    @Transactional
+    public List<Integer> getHomeworkGradeData(Long homeworkId) {
+        return takingHomeworkRepository.findByHomework_Id(homeworkId).stream()
+                .map(TakingHomework::getScore)
+                .toList();
+    }
 }
